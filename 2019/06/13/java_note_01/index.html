@@ -3,18 +3,18 @@
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="utf-8">
   
-  <title>Hello World | Helianthus</title>
+  <title>java中静态方法和单例模式 | Helianthus</title>
   <meta name="author" content="Helianthus W">
 
   
-  <meta name="description" content="Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in ">
+  <meta name="description" content="方法的加载从内存上分析，当应用程序完成初始化后，CLR(Common Language Runtime公共语言运行库)和java虚拟机一样也是一个运行时环境，它负责资源管理(内存分配和垃圾收集等)，并保证应用和底层操作系统之间的必要的分离。CLR在进程的可用空间给每个进程分配一个地址空间，这个地址空">
   
 
   
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  <meta property="og:title" content="Hello World">
+  <meta property="og:title" content="java中静态方法和单例模式">
   <meta property="og:site_name" content="Helianthus">
 
   
@@ -63,26 +63,24 @@
     <header>
       
         <div class="icon"></div>
-        <time datetime="2019-04-23T08:13:11.535Z"><a href="/2019/04/23/hello-world/">2019-04-23</a></time>
+        <time datetime="2019-06-13T08:49:06.779Z"><a href="/2019/06/13/java_note_01/">2019-06-13</a></time>
       
       
   
-    <h1 class="title">Hello World</h1>
+    <h1 class="title">java中静态方法和单例模式</h1>
   
 
     </header>
     <div class="entry">
       
-        <p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-<p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+        <h4 id="方法的加载"><a href="#方法的加载" class="headerlink" title="方法的加载"></a>方法的加载</h4><pre><code>从内存上分析，当应用程序完成初始化后，CLR(Common Language Runtime公共语言运行库)和java虚拟机一样也是一个运行时环境，它负责资源管理(内存分配和垃圾收集等)，并保证应用和底层操作系统之间的必要的分离。CLR在进程的可用空间给每个进程分配一个地址空间，这个地址空间就是托管堆。
 
+托管堆又分为多个区域，其中最重要的是垃圾回收堆（GC Heap）和加载堆（Loader Heap），GC Heap用于存储对象实例，受GC管理。Loader Heap通过MethodTable表存储的最重要的信息就是元数据相关信息，例如基类型，静态字段，实现接口和所有方法等等。Loader Heap不受GC控制，其生命周期为应用创建到应用销毁。也就是说一个类一旦被加载，这个类的静态和非静态方法都会存储到Loader Heap的MethodTable表中，它们都是第一次加载就会常驻内存中。
+</code></pre><h4 id="静态方法和非静态方法的区别"><a href="#静态方法和非静态方法的区别" class="headerlink" title="静态方法和非静态方法的区别"></a>静态方法和非静态方法的区别</h4><pre><code>静态方法和非静态方法的区别在于创建对象的时候，静态方法就一份，而非静态方法每new一个新对象就会把这个实例相关的信息在GC Heap上复制一份，同时把new出来的新对象放在堆栈上。堆栈指针指向的地址就是刚刚复制到GC Heap的内存地址。所以在方法的调用速度上，静态方法要稍微快一点，因为非静态方法要实例化，分配内存。
+</code></pre><h4 id="静态方法和单例模式的区别"><a href="#静态方法和单例模式的区别" class="headerlink" title="静态方法和单例模式的区别"></a>静态方法和单例模式的区别</h4><pre><code>静态方法是基于类的，而单例则是基于对象的。如果解决模式是基于对象的就是用单例，否则使用静态方法。比如需要继承类，实现接口，需要延迟初始化，需要重写父类等要使用单例；
+其次，静态方法是面向过程的，单例是面向对象的；
+第三，静态属性变量不会被GC清楚，静态方法中产生的对象会随着静态方法执行完毕而被释放，单例的对象不会被清除
+</code></pre>
       
     </div>
     

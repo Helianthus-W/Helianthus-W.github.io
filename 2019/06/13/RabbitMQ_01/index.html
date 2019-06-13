@@ -3,16 +3,18 @@
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="utf-8">
   
-  <title>Archives: 2019/4 | Helianthus</title>
+  <title>Rabbit MQ 使用记录(一) | Helianthus</title>
   <meta name="author" content="Helianthus W">
 
+  
+  <meta name="description" content="Rabbit MQ 使用之brokerCachingConnectionFactory默认的缓存模式是CHANNEL，RabbitAdmin实现会在同一个ApplicationContext中自动延迟声明Queues，Exchanges和Bindings。只要Connection打开了与Broker">
   
 
   
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  
+  <meta property="og:title" content="Rabbit MQ 使用记录(一)">
   <meta property="og:site_name" content="Helianthus">
 
   
@@ -55,73 +57,65 @@
 </nav>
 <div class="clearfix"></div></header>
   <div id="content" class="inner">
-    <div id="main-col" class="alignleft"><div id="wrapper">
-<h2 class="archive-title">2019/4</h2>
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-06-13T08:49:06.817Z"><a href="/2019/06/13/RabbitMQ_01/">2019-06-13</a></time>
+      
+      
+  
+    <h1 class="title">Rabbit MQ 使用记录(一)</h1>
+  
 
+    </header>
+    <div class="entry">
+      
+        <h3 id="Rabbit-MQ-使用之broker"><a href="#Rabbit-MQ-使用之broker" class="headerlink" title="Rabbit MQ 使用之broker"></a>Rabbit MQ 使用之broker</h3><p>CachingConnectionFactory默认的缓存模式是CHANNEL，RabbitAdmin实现会在同一个ApplicationContext中自动延迟声明Queues，Exchanges和Bindings。只要Connection打开了与Broker的连接，这些组件就会被声明。</p>
+<blockquote>
+<p>延迟消息交换器</p>
+</blockquote>
+<blockquote>
+<p>事物</p>
+</blockquote>
+<blockquote>
+<p>消息监听器</p>
+</blockquote>
+<pre><code>acknowledge:应答模式
+</code></pre><ol>
+<li>NONE:不发送应答</li>
+<li>MANUAL:手动应答</li>
+<li><p>AUTO:自动应答</p>
+<p> concurrentConsumers:每个监听器上初始启动的并发消费者的数量</p>
+<p> defaultRequeueRejected:因监听器抛出异常而遭受拒绝的消息是否需要重新入列。默认为true</p>
+<p> missingQueuesFatal:</p>
+</li>
+</ol>
+<blockquote>
+<p>RabbitMQ相关概念：</p>
+</blockquote>
+<p>ConnectionFactory: 应用程序与Rabbit之间建立连接的管理器<br>Channel：消息推送使用的通道<br>Exchange：用于接收、分配消息<br>Queue：用于存储生产者的消息<br>RoutingKey：用于把生产者的数据分配到交换机上<br>BindingKey：用于把交换机的消息绑定到队列上</p>
 
-  <div class="archive">
+      
+    </div>
     
-      <article class="post">
-        <div class="post-content">
-          <header>
-            <div class="icon"></div>
-            <time datetime="2019-04-25T10:11:33.033Z"><a href="/2019/04/25/japanese_02/">2019-04-25</a></time>
-            
-              <h1 class="title"><a href="/2019/04/25/japanese_02/">日语50音学习系列(二)</a></h1>
-            
-          </header>
+    <footer>
+        <div class="alignright">
+          
+          <a href="javascript:void(0)" class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
         </div>
-      </article>
-    
-      <article class="post">
-        <div class="post-content">
-          <header>
-            <div class="icon"></div>
-            <time datetime="2019-04-25T08:23:01.514Z"><a href="/2019/04/25/japanese_01/">2019-04-25</a></time>
-            
-              <h1 class="title"><a href="/2019/04/25/japanese_01/">日语50音学习系列(一)</a></h1>
-            
-          </header>
-        </div>
-      </article>
-    
-      <article class="post">
-        <div class="post-content">
-          <header>
-            <div class="icon"></div>
-            <time datetime="2019-04-24T07:16:08.618Z"><a href="/2019/04/24/writing_on_github01/">2019-04-24</a></time>
-            
-              <h1 class="title"><a href="/2019/04/24/writing_on_github01/">开始在GitHub上的写作之旅</a></h1>
-            
-          </header>
-        </div>
-      </article>
-    
-      <article class="post">
-        <div class="post-content">
-          <header>
-            <div class="icon"></div>
-            <time datetime="2019-04-24T03:27:37.632Z"><a href="/2019/04/24/markdown简单使用/">2019-04-24</a></time>
-            
-              <h1 class="title"><a href="/2019/04/24/markdown简单使用/">first blog</a></h1>
-            
-          </header>
-        </div>
-      </article>
-    
-      <article class="post">
-        <div class="post-content">
-          <header>
-            <div class="icon"></div>
-            <time datetime="2019-04-23T08:13:11.535Z"><a href="/2019/04/23/hello-world/">2019-04-23</a></time>
-            
-              <h1 class="title"><a href="/2019/04/23/hello-world/">Hello World</a></h1>
-            
-          </header>
-        </div>
-      </article>
-    
+        
+        
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
   </div>
+</article>
+
+
+
 </div></div>
     <aside id="sidebar" class="alignright">
   <div class="search">

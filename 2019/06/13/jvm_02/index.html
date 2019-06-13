@@ -1,0 +1,239 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>JVM内存区 | Helianthus</title>
+  <meta name="author" content="Helianthus W">
+
+  
+  <meta name="description" content="Java内存区域JVM在执行Java程序的过程中，会把所管理的内存划分为若干不同的数据区域。这些内存区域各有各的用途，以及创建时间和销毁时间。有的区域随着虚拟机进程的启动而存在，有的区域伴随着用户线程的启动和结束而创建和销毁。
+
+JVM内存区也成为Java运行时数据区域，其中包括：程序计数器，虚拟机">
+  
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="JVM内存区">
+  <meta property="og:site_name" content="Helianthus">
+
+  
+  
+
+  
+    <meta property="og:image" content>
+  
+
+  
+  <link href="/css/images/favicon.ico" rel="icon">
+  
+
+  <link rel="alternate" href="/atom.xml" title="Helianthus" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+
+  <!-- baidu webmaster push -->
+  <script src="//push.zhanzhang.baidu.com/push.js"></script>
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Helianthus</a></h1>
+  <h2><a href="/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-06-13T08:49:06.798Z"><a href="/2019/06/13/jvm_02/">2019-06-13</a></time>
+      
+      
+  
+    <h1 class="title">JVM内存区</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h4 id="Java内存区域"><a href="#Java内存区域" class="headerlink" title="Java内存区域"></a>Java内存区域</h4><pre><code>JVM在执行Java程序的过程中，会把所管理的内存划分为若干不同的数据区域。这些内存区域各有各的用途，以及创建时间和销毁时间。有的区域随着虚拟机进程的启动而存在，有的区域伴随着用户线程的启动和结束而创建和销毁。
+
+JVM内存区也成为Java运行时数据区域，其中包括：程序计数器，虚拟机栈，本地方法栈，堆，静态方法区，静态常量池等。
+</code></pre><blockquote>
+<p>PC计数器(Program Counter Register)</p>
+</blockquote>
+<pre><code>程序计数器是一块较小的内存空间，它的作用可以看做是当前线程所执行的字节码行号指示器。
+每个线程都有一个自己的PC计数器，它是私有的，声明周期和线程相同，随着JVM启动而生，JVM关闭而死。当线程执行java方法时，记录其正在执行的虚拟机字节码指令地址，当线程执行Native方法时，计数器记录为空。PC计数器是唯一在JVM规范中没有规定任何OutOfMemoryError的区域。
+</code></pre><blockquote>
+<p>虚拟机栈</p>
+</blockquote>
+<pre><code>虚拟机栈是线程私有的内存空间，声明周期和线程相同。线程执行期间，每个方法执行时都会创建一个栈帧，用于存储局部变量表，操作数栈，动态链接，方法出口等信息。
+</code></pre><h6 id="局部变量表"><a href="#局部变量表" class="headerlink" title="局部变量表"></a>局部变量表</h6><pre><code>局部变量表是一组变量值的存储空间，用于存储方法参数和局部变量。在class文件的方法表的code属性和max_locals指定了该方法所需局部变量表的最大容量。
+局部变量表的最小单位是变量槽。规定大小为32位。对于64位的long和double变量而言，虚拟机会为其分配两个连续的Slot空间。
+局部变量表在编译期间分配内存空间，可以存放编译期的各种变量类型：
+</code></pre><ul>
+<li>基本数据类型： boolean，byte，char，short，int，float，long，double</li>
+<li>对象引用类型： reference，指向对象起始地址的引用指针</li>
+<li>返回地址类型： returnAddress，返回地址的类型</li>
+</ul>
+<h6 id="操作数栈"><a href="#操作数栈" class="headerlink" title="操作数栈"></a>操作数栈</h6><pre><code>操作数栈是一个后入先出栈。在class文件的code属性的max_stacks指定了执行过程中最大的栈深度。操作数栈也是一个以32字长为单位的数组。
+虚拟机在操作数栈中可存储的数据类型：int，long，float，double。reference和returnType(对于byte、short、char类型的值在压入到
+操作数栈之前也会被转为int)。
+和局部变量表所不同的是，它不是通过索引来访问，而是通过标准的栈操作--压栈和出栈来访问的。
+虚拟机把操作数栈作为它的工作区，大多数指令都要从这里弹出数据，执行运算，然后把结果压回操作数栈。
+</code></pre><h6 id="动态链接"><a href="#动态链接" class="headerlink" title="动态链接"></a>动态链接</h6><pre><code>每个栈帧都包含一个指向运行时常量池中所属的方法的引用，持有这个引用是为了支持方法调用过程中的动态链接。class文件中的常量池中存有大量的符号引用，字节码中的方法调用指令就以常量池中指向方法的符号引用为参数。
+符号的引用可通过一下方式生成：
+</code></pre><ul>
+<li>静态解析： 一部分会在类加载阶段或第一次使用的时候转换为直接引用(如final，static域等)，称为静态解析</li>
+<li>动态解析： 另一部分将在每一次的运行期间转换为直接引用，称为动态链接</li>
+</ul>
+<h6 id="方法返回地址"><a href="#方法返回地址" class="headerlink" title="方法返回地址"></a>方法返回地址</h6><pre><code>一个方法开始执行后，只有两种方法可以退出当前方法：
+</code></pre><ul>
+<li><p>正常返回： 当执行遇到返回指令时，会将返回值传递给上层的方法调用者，这种退出的方式称为正常完成出口，一般来说，调用者的PC计数器可</p>
+<pre><code>以作为返回地址
+</code></pre></li>
+<li><p>异常返回： 当执行遇到异常，并且当前方法体内没有得到处理，就会导致方法退出，此时是没有返回值的，称为异常完成出口。返回地址要通过</p>
+<pre><code>异常处理器来确定。
+</code></pre><p>  当一个方法返回时，可能依次进行一下操作：</p>
+</li>
+<li><p>恢复上层方法的局部变量表和操作数栈</p>
+</li>
+<li>把返回值压入调用者栈帧的操作数栈</li>
+<li>将PC计数器的数值指向下一条的方法指令位置</li>
+</ul>
+<p><strong><em>每一个方法从调用到执行结束的过程，就是对应着一个栈帧在虚拟机栈中的入栈和出栈的过程。</em></strong></p>
+<blockquote>
+<p>本地方法栈</p>
+</blockquote>
+<pre><code>本地方法栈和java虚拟机栈发挥的作用非常相似，主要区别在于java虚拟机栈执行的是啊java方法服务，而本地方法栈执行Native方法服务。
+</code></pre><blockquote>
+<p>堆</p>
+</blockquote>
+<pre><code>java堆是所有线程共享的最大的一块内存区域，在虚拟机启动时创建。此内存区域的唯一目的就是存放对象实例，几乎所有的对象实例都在这里分配内存。
+在java中，堆被分成两个不同的区域，新生代(Young Generation)和老年代(Old Generation)。其中新生代又被划分为三个区域，一个Eden区
+和两个Survivor区(From Survivor和To Survivor)。
+</code></pre><p><strong><em>新的对象分配是首先放在年轻代的Eden区，Survivor区作为Eden区和老年代的缓冲，在Survivor区的对象经历若干次收集仍然存活的就会被转移到老年代中</em></strong></p>
+<blockquote>
+<p>方法区</p>
+</blockquote>
+<pre><code>方法区和java堆一样，为多个线程共享，它用于存储类信息、常量、静态常量和即时编译后的代码等数据。
+</code></pre><blockquote>
+<p>运行时常量池</p>
+</blockquote>
+<pre><code>运行时常量池是方法区的一部分，class文件中除了有类的版本，字段，方法和接口等描述信息外，还有一类信息是常量池，用于存储编译期间生成的各种字面量和符号引用。
+</code></pre><blockquote>
+<p>直接内存</p>
+</blockquote>
+<pre><code>直接内存不属于虚拟机运行时数据区的一部分，也不是java虚拟机规范中定义的内存区域。
+Java NIO允许java程序直接访问直接内存，通常直接内存的速度会优于java堆内存。因此，对于读写频繁、性能要求高的场景，可以考虑使用直接内存。
+</code></pre>
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="javascript:void(0)" class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+        
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:yoursite.com">
+  </form>
+</div>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">Recent Posts</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2019/06/13/杂记/"></a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/13/关于java的反射和内省/">java反射和内省</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/13/Spring Doc_01/"></a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/13/RabbitMQ_02/">RabbitMQ 配置</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/13/RabbitMQ_01/">Rabbit MQ 使用记录(一)</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  <p>
+  
+  &copy; 2019 Helianthus W
+  
+  All rights reserved.</p>
+  <p>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></p>
+</div>
+<div class="clearfix"></div>
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+<div id="bg"></div>
+</body>
+</html>

@@ -3,16 +3,18 @@
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="utf-8">
   
-  <title>Archives: 2019/4 | Helianthus</title>
+  <title>java反射和内省 | Helianthus</title>
   <meta name="author" content="Helianthus W">
 
+  
+  <meta name="description" content="在java中所有的对象不是引用类型就是基本类型。不管什么类型的对象，java虚拟机都会为之实例化一个java.lang.Class的不可变实例，（Class类的实例就是运行的java应用里的classes和interfaces），这个实例会提供方法来检测对象的成员（members）和类型（type）">
   
 
   
 
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
-  
+  <meta property="og:title" content="java反射和内省">
   <meta property="og:site_name" content="Helianthus">
 
   
@@ -55,73 +57,46 @@
 </nav>
 <div class="clearfix"></div></header>
   <div id="content" class="inner">
-    <div id="main-col" class="alignleft"><div id="wrapper">
-<h2 class="archive-title">2019/4</h2>
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-06-13T08:49:06.835Z"><a href="/2019/06/13/关于java的反射和内省/">2019-06-13</a></time>
+      
+      
+  
+    <h1 class="title">java反射和内省</h1>
+  
 
-
-  <div class="archive">
+    </header>
+    <div class="entry">
+      
+        <p>在java中所有的对象不是引用类型就是基本类型。不管什么类型的对象，java虚拟机都会为之实例化一个java.lang.Class的不可变实例，（Class类的实例就是运行的java应用里的classes和interfaces），这个实例会提供方法来检测对象的成员（members）和类型（type）信息。Class也有能力创建新的classes和objects。最重要的是Class是所有反射的API的入口。</p>
+<h4 id="获取Class的方式"><a href="#获取Class的方式" class="headerlink" title="获取Class的方式"></a>获取Class的方式</h4><h5 id="object-getClass"><a href="#object-getClass" class="headerlink" title="object.getClass()"></a>object.getClass()</h5><pre><code>该方式只对引用类型有效
+</code></pre><h5 id="Class-class"><a href="#Class-class" class="headerlink" title="Class.class"></a>Class.class</h5><pre><code>基础类型获得相应的Class
+</code></pre><h5 id="Class-forName"><a href="#Class-forName" class="headerlink" title="Class.forName()"></a>Class.forName()</h5><pre><code>如果知道一个类的完整路径，可以通过该静态方法来获得相应的Class，该方式不能用于基础类型
+</code></pre><h5 id="Object-TYPE"><a href="#Object-TYPE" class="headerlink" title="Object.TYPE"></a>Object.TYPE</h5><pre><code>基本类型可以通过其包装类型的TYPE属性来获取Class
+</code></pre><h5 id="Class-getClass"><a href="#Class-getClass" class="headerlink" title="Class.getClass()"></a>Class.getClass()</h5>
+      
+    </div>
     
-      <article class="post">
-        <div class="post-content">
-          <header>
-            <div class="icon"></div>
-            <time datetime="2019-04-25T10:11:33.033Z"><a href="/2019/04/25/japanese_02/">2019-04-25</a></time>
-            
-              <h1 class="title"><a href="/2019/04/25/japanese_02/">日语50音学习系列(二)</a></h1>
-            
-          </header>
+    <footer>
+        <div class="alignright">
+          
+          <a href="javascript:void(0)" class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
         </div>
-      </article>
-    
-      <article class="post">
-        <div class="post-content">
-          <header>
-            <div class="icon"></div>
-            <time datetime="2019-04-25T08:23:01.514Z"><a href="/2019/04/25/japanese_01/">2019-04-25</a></time>
-            
-              <h1 class="title"><a href="/2019/04/25/japanese_01/">日语50音学习系列(一)</a></h1>
-            
-          </header>
-        </div>
-      </article>
-    
-      <article class="post">
-        <div class="post-content">
-          <header>
-            <div class="icon"></div>
-            <time datetime="2019-04-24T07:16:08.618Z"><a href="/2019/04/24/writing_on_github01/">2019-04-24</a></time>
-            
-              <h1 class="title"><a href="/2019/04/24/writing_on_github01/">开始在GitHub上的写作之旅</a></h1>
-            
-          </header>
-        </div>
-      </article>
-    
-      <article class="post">
-        <div class="post-content">
-          <header>
-            <div class="icon"></div>
-            <time datetime="2019-04-24T03:27:37.632Z"><a href="/2019/04/24/markdown简单使用/">2019-04-24</a></time>
-            
-              <h1 class="title"><a href="/2019/04/24/markdown简单使用/">first blog</a></h1>
-            
-          </header>
-        </div>
-      </article>
-    
-      <article class="post">
-        <div class="post-content">
-          <header>
-            <div class="icon"></div>
-            <time datetime="2019-04-23T08:13:11.535Z"><a href="/2019/04/23/hello-world/">2019-04-23</a></time>
-            
-              <h1 class="title"><a href="/2019/04/23/hello-world/">Hello World</a></h1>
-            
-          </header>
-        </div>
-      </article>
-    
+        
+        
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
   </div>
+</article>
+
+
+
 </div></div>
     <aside id="sidebar" class="alignright">
   <div class="search">

@@ -1,0 +1,195 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>Sychronized | Helianthus</title>
+  <meta name="author" content="Helianthus W">
+
+  
+  <meta name="description" content="Java内置锁每个java对象都可以用作一个实现同步的锁，这些锁称为内置锁。线程进入同步代码块或方法的时候会自动获得该锁，在退出同步代码块或方法时会释放该锁。获得内置锁的唯一途径就是进入这个锁的保护的同步代码块或方法。
+
+java内置锁是一个互斥锁，这就意味着最多只有一个线程能够获得该锁，当线程1尝">
+  
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="Sychronized">
+  <meta property="og:site_name" content="Helianthus">
+
+  
+  
+
+  
+    <meta property="og:image" content>
+  
+
+  
+  <link href="/css/images/favicon.ico" rel="icon">
+  
+
+  <link rel="alternate" href="/atom.xml" title="Helianthus" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+
+  <!-- baidu webmaster push -->
+  <script src="//push.zhanzhang.baidu.com/push.js"></script>
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Helianthus</a></h1>
+  <h2><a href="/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-06-13T08:49:06.788Z"><a href="/2019/06/13/java_sychronized/">2019-06-13</a></time>
+      
+      
+  
+    <h1 class="title">Sychronized</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h4 id="Java内置锁"><a href="#Java内置锁" class="headerlink" title="Java内置锁"></a>Java内置锁</h4><pre><code>每个java对象都可以用作一个实现同步的锁，这些锁称为内置锁。线程进入同步代码块或方法的时候会自动获得该锁，在退出同步代码块或方法时会释放该锁。获得内置锁的唯一途径就是进入这个锁的保护的同步代码块或方法。
+
+java内置锁是一个互斥锁，这就意味着最多只有一个线程能够获得该锁，当线程1尝试去获得线程2持有的内置锁时，线程1必须等待或者是阻塞，如果线程2不释放这个锁，那么线程1将永远等待下去。
+</code></pre><h4 id="对象锁和类锁"><a href="#对象锁和类锁" class="headerlink" title="对象锁和类锁"></a>对象锁和类锁</h4><pre><code>java的对象锁和类锁在锁的概念上基本和内置锁是一致的，但是两个锁实际是有很大区别的，对象锁作用于对象的实例方法或者一个对象实例上，类锁是用于类的静态方法或者一个类的class对象上。
+
+类的对象实例有很多个，但是每个类只有一个class对象，所以不同对象实例的对象锁是互不干扰的，每个类只有一个类锁。类锁只是一个概念性的东西，并不是真实存在的，只用用于理解区分锁定实例方法和静态方法的区别。
+</code></pre><blockquote>
+<p>对象锁 sychronized修饰实例方法 | sychronized修饰代码块</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SychronizedCase</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        sychronized(<span class="keyword">this</span>) &#123;</span><br><span class="line">            <span class="keyword">int</span> i = <span class="number">5</span>;</span><br><span class="line">            <span class="keyword">while</span>(i-- &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                System.out.println(Thread.currentThread().getName()+ <span class="string">":"</span> + i);</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    Thread.sleep(<span class="number">1000L</span>);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">test2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">5</span>;</span><br><span class="line">        <span class="keyword">while</span>(i-- &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            System.out.println(Thread.currentThread().getName() + <span class="string">":"</span> + i);</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                    Thread.sleep(<span class="number">1000L</span>);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SychronizedCase sychronizedCase = <span class="keyword">new</span> SychronizedCase();</span><br><span class="line">        <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                sychronizedCase.test1();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).start();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                sychronizedCase.test2();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).start();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>在test1()中使用了同步代码块的方式进行同步，传入的对象实例是this，在test2()中使用同步关键字修饰实例方法，在两个同步代码所需要获得的对象锁都是同一个对象锁
+
+进行了同步的方法和没有进行同步的方法是互不影响的，一个线程进入了同步方法，得到了对象锁，其他线程还是可以访问那些没有同步的方法。对象的内置锁和对象的状态之间是没有内在的关联的，虽有大多数类都将内置锁用作一种有效的加锁机制，但对象的域并不一定通过内置锁来保护。当获取到与对象关联的内置锁时，并不能阻止其他线程访问该对象，当某个线程获得对象的锁之后，只能阻止其他线程获得同一个锁。之所以每个对象都有一个内置锁，是为了免去显式的创建锁对象。
+
+因此，sychronized只是一个内置锁的加锁机制，当某个方法加上sychronized关键字后，就表明要获得该内置锁才能执行，并不能阻止其他线程访问不需要获得该内置锁的方法。
+</code></pre><blockquote>
+<p>类锁 sychronized修饰静态方法 | sychronized修饰代码块、</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SychronizedCase</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">synchronized</span>(SychronizedCase.class) &#123;</span><br><span class="line">            <span class="keyword">int</span> i = <span class="number">5</span>;</span><br><span class="line">            <span class="keyword">while</span>(i-- &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                System.out.println(Thread.currentThread().getName() + <span class="string">":"</span> + i);</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    Thread.sleep(<span class="number">1000L</span>);</span><br><span class="line">                &#125; <span class="keyword">catch</span>(Exception e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">test2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">5</span>;</span><br><span class="line">        <span class="keyword">while</span>(i-- &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            System.out.println(Thread.currentThread().getName() + <span class="string">":"</span> + i);</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                Thread.sleep(<span class="number">1000L</span>);</span><br><span class="line">            &#125; <span class="keyword">catch</span>(Exception e)&#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SychronizedCase sychronizedCase = <span class="keyword">new</span> SychronizedCase();</span><br><span class="line">        <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                sychronizedCase.test1();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).start();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span>  <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                sychronizedCase.test2();   </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<pre><code>使用类锁修饰方法和代码块的效果和对象锁是一样的，类锁只是抽象出来的一个概念，是为了区分静态方法的特点，静态方法是所有对象实例公用的，所以对应着修饰的静态方法的锁也是唯一的。
+
+使用sychronized同时修饰静态方法和实例方法，类锁和对象锁是两个不一样的锁，控制着不同的区域，它们是互不干扰的。同样，线程获得对象锁的同时，也可以获得类锁，即同时获得两个锁，这是允许的。
+</code></pre><blockquote>
+<p>sychronized的缺陷</p>
+</blockquote>
+<pre><code>当某个线程进入同步方法获得对象锁，那么其他线程访问这个对象的同步方法时，必须等待或者阻塞，这个高并发系统是致命的，很容易导致系统的崩溃。如果某个线程在同步方法里发生了死循环，那么它就永远不会释放这个对象锁，那么其他线程就要永远等待。
+</code></pre>
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="javascript:void(0)" class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+        
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:yoursite.com">
+  </form>
+</div>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">Recent Posts</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2019/06/13/杂记/"></a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/13/关于java的反射和内省/">java反射和内省</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/13/Spring Doc_01/"></a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/13/RabbitMQ_02/">RabbitMQ 配置</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/13/RabbitMQ_01/">Rabbit MQ 使用记录(一)</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  <p>
+  
+  &copy; 2019 Helianthus W
+  
+  All rights reserved.</p>
+  <p>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></p>
+</div>
+<div class="clearfix"></div>
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+<div id="bg"></div>
+</body>
+</html>

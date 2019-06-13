@@ -3,9 +3,12 @@
 <head><meta name="generator" content="Hexo 3.8.0">
   <meta charset="utf-8">
   
-  <title>Archives: 2019/4 | Helianthus</title>
+  <title>Helianthus</title>
   <meta name="author" content="Helianthus W">
 
+  
+  <meta name="description" content="日志等级：ERROR：系统产生的错误信息，往往会严重影响系统的稳定性WARNING: 警告信息，这类信息需要特别注意但是不会影响系统运行INFO: 系统内部状态，可以用来分析一些工作DEBUG: 调试信息，这类日志一般会在开发的时候用的较多TRACE: 流程追踪信息，这类信息一般用来追踪一个操作流
+">
   
 
   
@@ -55,73 +58,46 @@
 </nav>
 <div class="clearfix"></div></header>
   <div id="content" class="inner">
-    <div id="main-col" class="alignleft"><div id="wrapper">
-<h2 class="archive-title">2019/4</h2>
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-06-13T08:49:06.803Z"><a href="/2019/06/13/log_01/">2019-06-13</a></time>
+      
+      
+  
+    <h1 class="title"></h1>
+  
 
+    </header>
+    <div class="entry">
+      
+        <p>日志等级：<br>ERROR：系统产生的错误信息，往往会严重影响系统的稳定性<br>WARNING: 警告信息，这类信息需要特别注意但是不会影响系统运行<br>INFO: 系统内部状态，可以用来分析一些工作<br>DEBUG: 调试信息，这类日志一般会在开发的时候用的较多<br>TRACE: 流程追踪信息，这类信息一般用来追踪一个操作流</p>
+<p>ERROR &gt; WARNING &gt; INFO &gt; DEBUG&gt; TRACE</p>
+<p>对于后端系统日志而言，应用一直在后台没日没夜的运行，我们不能在系统出现问题的时候再去添加新的埋点（打印日志的地方），所以需要仔细的考量需要埋点的地方，其次后端系统由于业务场景不同，往往产生大量的日志，这就需要对日志进行分类一边后续的分析。由于后端系统会长时间运行，所以日志会不断的产生，为了存储大量的日志信息，还需要合适的策略来对日志进行文件存储。</p>
+<p>从业务角度，可以把日志分为以下几类：<br>1.业务日志 比如用户的操作日志，主要用来监控业务逻辑的执行情况<br>2.错误日志 系统错误信息<br>3.摘要日志 系统操作上下文的摘要信息<br>4.统计日志 可以汇总的统计的信息</p>
+<p>ELK</p>
 
-  <div class="archive">
+      
+    </div>
     
-      <article class="post">
-        <div class="post-content">
-          <header>
-            <div class="icon"></div>
-            <time datetime="2019-04-25T10:11:33.033Z"><a href="/2019/04/25/japanese_02/">2019-04-25</a></time>
-            
-              <h1 class="title"><a href="/2019/04/25/japanese_02/">日语50音学习系列(二)</a></h1>
-            
-          </header>
+    <footer>
+        <div class="alignright">
+          
+          <a href="javascript:void(0)" class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
         </div>
-      </article>
-    
-      <article class="post">
-        <div class="post-content">
-          <header>
-            <div class="icon"></div>
-            <time datetime="2019-04-25T08:23:01.514Z"><a href="/2019/04/25/japanese_01/">2019-04-25</a></time>
-            
-              <h1 class="title"><a href="/2019/04/25/japanese_01/">日语50音学习系列(一)</a></h1>
-            
-          </header>
-        </div>
-      </article>
-    
-      <article class="post">
-        <div class="post-content">
-          <header>
-            <div class="icon"></div>
-            <time datetime="2019-04-24T07:16:08.618Z"><a href="/2019/04/24/writing_on_github01/">2019-04-24</a></time>
-            
-              <h1 class="title"><a href="/2019/04/24/writing_on_github01/">开始在GitHub上的写作之旅</a></h1>
-            
-          </header>
-        </div>
-      </article>
-    
-      <article class="post">
-        <div class="post-content">
-          <header>
-            <div class="icon"></div>
-            <time datetime="2019-04-24T03:27:37.632Z"><a href="/2019/04/24/markdown简单使用/">2019-04-24</a></time>
-            
-              <h1 class="title"><a href="/2019/04/24/markdown简单使用/">first blog</a></h1>
-            
-          </header>
-        </div>
-      </article>
-    
-      <article class="post">
-        <div class="post-content">
-          <header>
-            <div class="icon"></div>
-            <time datetime="2019-04-23T08:13:11.535Z"><a href="/2019/04/23/hello-world/">2019-04-23</a></time>
-            
-              <h1 class="title"><a href="/2019/04/23/hello-world/">Hello World</a></h1>
-            
-          </header>
-        </div>
-      </article>
-    
+        
+        
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
   </div>
+</article>
+
+
+
 </div></div>
     <aside id="sidebar" class="alignright">
   <div class="search">

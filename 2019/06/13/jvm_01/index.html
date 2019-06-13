@@ -1,0 +1,239 @@
+<!DOCTYPE HTML>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+  <title>JVM | Helianthus</title>
+  <meta name="author" content="Helianthus W">
+
+  
+  <meta name="description" content="JVM - Java Virtual MachineJVM是一种用于计算设备的规范，是一个虚构的计算机软件实现，一个运行byte code字节码程序的容器。JVM是基于栈结构的。
+JVM使用Java字节码的方式，作为Java用户语言和机器语言之间的中间语言。实现了一个通用的、机器无关的执行平台。
+
+">
+  
+
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+  <meta property="og:title" content="JVM">
+  <meta property="og:site_name" content="Helianthus">
+
+  
+  
+
+  
+    <meta property="og:image" content>
+  
+
+  
+  <link href="/css/images/favicon.ico" rel="icon">
+  
+
+  <link rel="alternate" href="/atom.xml" title="Helianthus" type="application/atom+xml">
+  <link rel="stylesheet" href="/css/style.css" media="screen" type="text/css">
+  <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+  
+
+
+  <!-- baidu webmaster push -->
+  <script src="//push.zhanzhang.baidu.com/push.js"></script>
+
+</head>
+</html>
+
+<body>
+  <header id="header" class="inner"><div class="alignleft">
+  <h1><a href="/">Helianthus</a></h1>
+  <h2><a href="/"></a></h2>
+</div>
+<nav id="main-nav" class="alignright">
+  <ul>
+    
+      <li><a href="/">Home</a></li>
+    
+      <li><a href="/archives">Archives</a></li>
+    
+  </ul>
+  <div class="clearfix"></div>
+</nav>
+<div class="clearfix"></div></header>
+  <div id="content" class="inner">
+    <div id="main-col" class="alignleft"><div id="wrapper"><article class="post">
+  
+  <div class="post-content">
+    <header>
+      
+        <div class="icon"></div>
+        <time datetime="2019-06-13T08:49:06.794Z"><a href="/2019/06/13/jvm_01/">2019-06-13</a></time>
+      
+      
+  
+    <h1 class="title">JVM</h1>
+  
+
+    </header>
+    <div class="entry">
+      
+        <h4 id="JVM-Java-Virtual-Machine"><a href="#JVM-Java-Virtual-Machine" class="headerlink" title="JVM - Java Virtual Machine"></a>JVM - Java Virtual Machine</h4><pre><code>JVM是一种用于计算设备的规范，是一个虚构的计算机软件实现，一个运行byte code字节码程序的容器。JVM是基于栈结构的。
+JVM使用Java字节码的方式，作为Java用户语言和机器语言之间的中间语言。实现了一个通用的、机器无关的执行平台。
+</code></pre><blockquote>
+<p>JVM特点</p>
+</blockquote>
+<ol>
+<li>符号引用<br> 除了基本类型以外的数据（类和接口）都是通过符号来引用的，而不是通过显示地使用内存地址来引用</li>
+<li>垃圾收集<br> 一个类的实例是由用户程序创建和垃圾回收自动销毁</li>
+<li>网络字节顺序<br> Java class文件用网络字节码顺序来进行存储，保证了小端的Intel x86架构和大端的RISC系列的架构之间的无关性</li>
+</ol>
+<blockquote>
+<p>JVM声明周期</p>
+</blockquote>
+<ul>
+<li>启动： 任何一个拥有main方法的class都可以作为JVM实例运行的起点</li>
+<li>运行： main函数为起点，程序中的其他线程均有它启动，包括damon守护线程和non-daemon普通线程。daemon是JVM自己使用的线程比如GC线程，<pre><code>main方法的初始线程是non-daemon。
+</code></pre></li>
+<li>消亡： 所有线程终止时，JVM实例结束生命</li>
+</ul>
+<blockquote>
+<p>JVM组成架构</p>
+</blockquote>
+<ol>
+<li><p>类加载器(Class Loader) : 负责加载程序中的类型(类和接口)，并赋予唯一的名字予以标识</p>
+<p> JDK默认提供了三种Class Loader：</p>
+<ul>
+<li>Bootstrap ClassLoader -&gt; 负责$JAVA_HOME/jre/lib, $JAVA_HOME/jre/classes以及-Xbootclasspath参数指定路径下的类</li>
+<li>Extension ClassLoader -&gt; 负载$JAVA_HOME/jre/lib/ext下的所有classes目录以及java.ext.dirs系统变量指定路径下的类</li>
+<li><p>Application ClassLoader -&gt; classpath指定的路径下的类或jar文档，它是java程序的默认类加载器</p>
+<p>三种类加载器的关系为：<br>Bootstrap ClassLoader是在JVM启动后初始化的；<br>Bootstrap ClassLoader负责加载Extension ClassLoader，并且将Extension ClassLoader的父加载器设置为Bootstrap ClassLoader；<br>Bootstrap ClassLoader加载完Extension ClassLoader之后，就会加载Application ClassLoader，并将Application ClassLoader的父加载器设置为Extension ClassLoader</p>
+</li>
+</ul>
+</li>
+</ol>
+<h6 id="双亲委托机制"><a href="#双亲委托机制" class="headerlink" title="双亲委托机制"></a>双亲委托机制</h6><pre><code>双亲委托： 
+当前ClassLoader首先从自己已经加载的类中查询此类是否已经加载，如果已经加载则直接返回原来已加载的类；
+当前ClassLoader的缓存中没有找到被加载的类的时候，委托父加载器去加载，父加载器采用同样的策略，首先查看自己的缓存，然后委托父类的父类去加载，一直到Bootstrap ClassLoader；
+当所有的父类加载器都没有加载的时候，再有当前的类加载器加载，并将其放入自己的缓存中，以便下次有加载请求的时候直接返回。
+</code></pre><p><strong><em>双亲委托机制的核心思想：自底向上检查类是否已经加载；自顶向下尝试加载类。</em></strong></p>
+<h6 id="ClassLoader隔离"><a href="#ClassLoader隔离" class="headerlink" title="ClassLoader隔离"></a>ClassLoader隔离</h6><pre><code>JVM对类的唯一标识是ClassLoader id + packageName + ClassName，所以一个运行程序中是有可能存在两个包名和类名完全一致的类。
+并且如果这两个类不是由同一个ClassLoader加载的话，是无法将一个类的实例强转为另外一个类的，这就是ClassLoader隔离。
+</code></pre><h6 id="类加载器的特点"><a href="#类加载器的特点" class="headerlink" title="类加载器的特点"></a>类加载器的特点</h6><pre><code>Java提供了动态加载特性。在运行时第一次引用到一个class的时候会对它进行装载(Loading)，链接(Linking)，初始化(Initialization),
+而不是在编译期进行的。(Hotspot JVM)
+</code></pre><ul>
+<li>层级结构： Java里的类加载器被组织成了具有父子关系的层级结构。Bootstrap类加载器是所有加载器的父亲</li>
+<li>代理模式： 基于层级结构，类的代理可以在加载器之间进行代理。当加载器加载一个类时，它会首先检查它在父加载器中是否进行了加载，如果<pre><code>如果上层加载器已经加载了该类，这个类会被直接使用，反之类加载器会请求加载这个类
+</code></pre></li>
+<li>可见性限制： 一个子加载器可以查找父加载器中的类，但是一个父加载器不能查找子加载器中的类</li>
+<li><p>不允许卸载： 加载器可以加载一个类但是不可以卸载它。可以删除当前的类加载器，然后创建一个新的类加载器进行加载</p>
+<p>  加载 -&gt; 链接 -&gt; y验证 -&gt; 准备 -&gt; 解析 -&gt; 初始化</p>
+</li>
+</ul>
+<ol start="2">
+<li><p>执行引擎(Execution Engine) ： 将java字节码转换成可以直接被JVM执行的语言。</p>
+<p> <strong><em>通过类加载器加载的，被分配到JVM的运行时数据区的字节码会被执行引擎执行。</em></strong></p>
+<p> 执行引擎以指令为单位读取java字节码。每个字节码指令都是有一个一字节的操作码和被附加的操作数组成，执行引擎取得一个操作码，然后根据操作数来执行任务，完成后就继续执行下一条操作码。</p>
+<p> 字节码可以通过一下两种方式转换成机器语言：</p>
+</li>
+</ol>
+<ul>
+<li><p>解释器</p>
+<p>  解释器一条一条地读取字节码，解释并执行字节码指令。因为它是一条一条的解释和执行命令，所以它可以很快的解释字节码，但是执行起来会比较慢。</p>
+</li>
+<li><p>即时编译器</p>
+<p>  即时编译器被引入引来弥补解释器的缺点。执行引擎首先按照解释执行的方式来执行，然后在合适的时候即时编译器把整段字节码编译成<br>  本地代码。然后，执行引擎就没有必要再去解释执行了，它可以直接通过本地代码去执行它，执行本地代码比一条一条解释执行的速度快很多。编译后的代码可以执行的很快是因为本地代码是保存在缓存里的。</p>
+<p>  <strong><em>java字节码是解释执行的，但是没有直接在JVM宿主执行原生代码快。为了提高性能，Oracle Hotspot虚拟机会找到执行最频繁的字节码片段并把它们编译成原生机器码。编译出的原生机器码被存储在非堆内存的代码缓存中。</em></strong></p>
+<p>  Hotspot虚拟机将权衡两种时间的消耗：将字节码编译成本地代码需要的额外时间和解释执行字节码消耗更多的时间。</p>
+</li>
+</ul>
+
+      
+    </div>
+    
+    <footer>
+        <div class="alignright">
+          
+          <a href="javascript:void(0)" class="share-link bdsharebuttonbox" data-cmd="more">分享</a>
+        </div>
+        
+        
+        <!-- partial('post/share') -->
+      <div class="clearfix"></div>
+    </footer>
+  </div>
+</article>
+
+
+
+</div></div>
+    <aside id="sidebar" class="alignright">
+  <div class="search">
+  <form action="//google.com/search" method="get" accept-charset="utf-8">
+    <input type="search" name="q" results="0" placeholder="Search">
+    <input type="hidden" name="q" value="site:yoursite.com">
+  </form>
+</div>
+
+  
+
+  
+<div class="widget tag">
+  <h3 class="title">Recent Posts</h3>
+  <ul class="entry">
+    
+      <li>
+        <a href="/2019/06/13/杂记/"></a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/13/关于java的反射和内省/">java反射和内省</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/13/Spring Doc_01/"></a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/13/RabbitMQ_02/">RabbitMQ 配置</a>
+      </li>
+    
+      <li>
+        <a href="/2019/06/13/RabbitMQ_01/">Rabbit MQ 使用记录(一)</a>
+      </li>
+    
+  </ul>
+</div>
+
+
+  
+
+  
+</aside>
+    <div class="clearfix"></div>
+  </div>
+  <footer id="footer" class="inner"><div class="alignleft">
+  <p>
+  
+  &copy; 2019 Helianthus W
+  
+  All rights reserved.</p>
+  <p>Powered by <a href="http://hexo.io/" target="_blank">Hexo</a></p>
+</div>
+<div class="clearfix"></div>
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"2","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script></footer>
+  <script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+  $('.fancybox').fancybox();
+})(jQuery);
+</script>
+
+
+<div id="bg"></div>
+</body>
+</html>
