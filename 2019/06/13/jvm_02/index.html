@@ -1,52 +1,59 @@
-extends base
+<!DOCTYPE html><html lang="null"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>JVM内存区 | Helianthus</title><link rel="stylesheet" type="text/css" href="//fonts.loli.net/css?family=Source+Code+Pro"><link rel="stylesheet" type="text/css" href="/css/style.css?v=2.0.3"><link rel="stylesheet" type="text/css" href="/css/highlight.css?v=2.0.3"><link rel="Shortcut Icon" href="/favicon.ico"><link rel="bookmark" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">JVM内存区</h1><a id="logo" href="/.">Helianthus</a><p class="description"></p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> Start</i></a><a href="/archives/"><i class="fa fa-archive"> Archiv</i></a><a href="/about/"><i class="fa fa-user"> Über</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div><div id="search-form"><div id="result-mask" class="hide"></div><label><input id="search-key" type="text" autocomplete="off" placeholder="Suche"></label><div id="result-wrap" class="hide"><div id="search-result"></div></div><div class="hide"><template id="search-tpl"><div class="item"><a href="/{path}" title="{title}"><div class="title">{title}</div><div class="time">{date}</div><div class="tags">{tags}</div></a></div></template></div></div></div><div id="layout" class="layout-g"><div class="layout-l"><div class="content_container"><div class="post"><h1 class="post-title">JVM内存区</h1><div class="post-meta"><a href="/2019/06/13/jvm_02/#comments" class="comment-count"></a><p><span class="date">Jun 13, 2019</span><span><i id="busuanzi_container_page_pv"><i id="busuanzi_value_page_pv"></i><i>Schlägt</i></i></span></p></div><div class="post-content"><h4 id="Java内存区域"><a href="#Java内存区域" class="headerlink" title="Java内存区域"></a>Java内存区域</h4><pre><code>JVM在执行Java程序的过程中，会把所管理的内存划分为若干不同的数据区域。这些内存区域各有各的用途，以及创建时间和销毁时间。有的区域随着虚拟机进程的启动而存在，有的区域伴随着用户线程的启动和结束而创建和销毁。
 
-block title
-  title= page.title + ' | ' + config.title
-
-block content
-  .post
-    h1.post-title= page.title
-    .post-meta
-      if theme.comment
-        include _partial/comment_count
-        +comment-count(page.path)
-      p
-        span.date= page.date.format(theme.date_formats.post)
-        if page.categories.length > 0
-          span
-            for category in page.categories.toArray()
-              a.category(href=url_for(category.path))= category.name 
-        if theme.busuanzi == true
-          span
-            i#busuanzi_container_page_pv
-              i#busuanzi_value_page_pv
-              i= '' + __('hits')
-    .post-content
-      != page.content
-    if theme.copyright.enable
-      .post-copyright
-        blockquote
-          p=  __("copyright_author") + ": " + config.author
-          p= __("copyright_link") + ": " 
-            a(href=url_for(config.url +'/'+ page.path))= config.url +'/'+ page.path
-          p!= __("copyright_notice") + ": " + (theme.copyright.describe ? theme.copyright.describe : __("copyright_details"))
-    include _partial/tag
-    .post-share
-      include _partial/share
-    include _partial/post_nav
-    #comments
-      include _partial/comments
-
-block tocmodel
-  if theme.toc.enable == true 
-    .widget(id='toc')
-      .widget-title
-        i(class='fa fa-fei')= __('contents')
-      != toc(page.content, {list_number: theme.toc.number})
-
-block pageOnly
-  if theme.toc.enable == true 
-    script(type='text/javascript', src=url_for(theme.js) + '/toctotop.js' + '?v=' + theme.version, async)
-  else 
-    script(type='text/javascript', src=url_for(theme.js) + '/totop.js' + '?v=' + theme.version, async)
-  include _partial/comments_js
+JVM内存区也成为Java运行时数据区域，其中包括：程序计数器，虚拟机栈，本地方法栈，堆，静态方法区，静态常量池等。</code></pre><blockquote>
+<p>PC计数器(Program Counter Register)</p>
+</blockquote>
+<pre><code>程序计数器是一块较小的内存空间，它的作用可以看做是当前线程所执行的字节码行号指示器。
+每个线程都有一个自己的PC计数器，它是私有的，声明周期和线程相同，随着JVM启动而生，JVM关闭而死。当线程执行java方法时，记录其正在执行的虚拟机字节码指令地址，当线程执行Native方法时，计数器记录为空。PC计数器是唯一在JVM规范中没有规定任何OutOfMemoryError的区域。</code></pre><blockquote>
+<p>虚拟机栈</p>
+</blockquote>
+<pre><code>虚拟机栈是线程私有的内存空间，声明周期和线程相同。线程执行期间，每个方法执行时都会创建一个栈帧，用于存储局部变量表，操作数栈，动态链接，方法出口等信息。</code></pre><h6 id="局部变量表"><a href="#局部变量表" class="headerlink" title="局部变量表"></a>局部变量表</h6><pre><code>局部变量表是一组变量值的存储空间，用于存储方法参数和局部变量。在class文件的方法表的code属性和max_locals指定了该方法所需局部变量表的最大容量。
+局部变量表的最小单位是变量槽。规定大小为32位。对于64位的long和double变量而言，虚拟机会为其分配两个连续的Slot空间。
+局部变量表在编译期间分配内存空间，可以存放编译期的各种变量类型：</code></pre><ul>
+<li>基本数据类型： boolean，byte，char，short，int，float，long，double</li>
+<li>对象引用类型： reference，指向对象起始地址的引用指针</li>
+<li>返回地址类型： returnAddress，返回地址的类型</li>
+</ul>
+<h6 id="操作数栈"><a href="#操作数栈" class="headerlink" title="操作数栈"></a>操作数栈</h6><pre><code>操作数栈是一个后入先出栈。在class文件的code属性的max_stacks指定了执行过程中最大的栈深度。操作数栈也是一个以32字长为单位的数组。
+虚拟机在操作数栈中可存储的数据类型：int，long，float，double。reference和returnType(对于byte、short、char类型的值在压入到
+操作数栈之前也会被转为int)。
+和局部变量表所不同的是，它不是通过索引来访问，而是通过标准的栈操作--压栈和出栈来访问的。
+虚拟机把操作数栈作为它的工作区，大多数指令都要从这里弹出数据，执行运算，然后把结果压回操作数栈。</code></pre><h6 id="动态链接"><a href="#动态链接" class="headerlink" title="动态链接"></a>动态链接</h6><pre><code>每个栈帧都包含一个指向运行时常量池中所属的方法的引用，持有这个引用是为了支持方法调用过程中的动态链接。class文件中的常量池中存有大量的符号引用，字节码中的方法调用指令就以常量池中指向方法的符号引用为参数。
+符号的引用可通过一下方式生成：</code></pre><ul>
+<li>静态解析： 一部分会在类加载阶段或第一次使用的时候转换为直接引用(如final，static域等)，称为静态解析</li>
+<li>动态解析： 另一部分将在每一次的运行期间转换为直接引用，称为动态链接</li>
+</ul>
+<h6 id="方法返回地址"><a href="#方法返回地址" class="headerlink" title="方法返回地址"></a>方法返回地址</h6><pre><code>一个方法开始执行后，只有两种方法可以退出当前方法：</code></pre><ul>
+<li><p>正常返回： 当执行遇到返回指令时，会将返回值传递给上层的方法调用者，这种退出的方式称为正常完成出口，一般来说，调用者的PC计数器可</p>
+<pre><code>以作为返回地址</code></pre></li>
+<li><p>异常返回： 当执行遇到异常，并且当前方法体内没有得到处理，就会导致方法退出，此时是没有返回值的，称为异常完成出口。返回地址要通过</p>
+<pre><code>异常处理器来确定。</code></pre><p>  当一个方法返回时，可能依次进行一下操作：</p>
+</li>
+<li><p>恢复上层方法的局部变量表和操作数栈</p>
+</li>
+<li><p>把返回值压入调用者栈帧的操作数栈</p>
+</li>
+<li><p>将PC计数器的数值指向下一条的方法指令位置</p>
+</li>
+</ul>
+<p><strong><em>每一个方法从调用到执行结束的过程，就是对应着一个栈帧在虚拟机栈中的入栈和出栈的过程。</em></strong></p>
+<blockquote>
+<p>本地方法栈</p>
+</blockquote>
+<pre><code>本地方法栈和java虚拟机栈发挥的作用非常相似，主要区别在于java虚拟机栈执行的是啊java方法服务，而本地方法栈执行Native方法服务。</code></pre><blockquote>
+<p>堆</p>
+</blockquote>
+<pre><code>java堆是所有线程共享的最大的一块内存区域，在虚拟机启动时创建。此内存区域的唯一目的就是存放对象实例，几乎所有的对象实例都在这里分配内存。
+在java中，堆被分成两个不同的区域，新生代(Young Generation)和老年代(Old Generation)。其中新生代又被划分为三个区域，一个Eden区
+和两个Survivor区(From Survivor和To Survivor)。</code></pre><p><strong><em>新的对象分配是首先放在年轻代的Eden区，Survivor区作为Eden区和老年代的缓冲，在Survivor区的对象经历若干次收集仍然存活的就会被转移到老年代中</em></strong></p>
+<blockquote>
+<p>方法区</p>
+</blockquote>
+<pre><code>方法区和java堆一样，为多个线程共享，它用于存储类信息、常量、静态常量和即时编译后的代码等数据。</code></pre><blockquote>
+<p>运行时常量池</p>
+</blockquote>
+<pre><code>运行时常量池是方法区的一部分，class文件中除了有类的版本，字段，方法和接口等描述信息外，还有一类信息是常量池，用于存储编译期间生成的各种字面量和符号引用。</code></pre><blockquote>
+<p>直接内存</p>
+</blockquote>
+<pre><code>直接内存不属于虚拟机运行时数据区的一部分，也不是java虚拟机规范中定义的内存区域。
+Java NIO允许java程序直接访问直接内存，通常直接内存的速度会优于java堆内存。因此，对于读写频繁、性能要求高的场景，可以考虑使用直接内存。</code></pre></div><div class="post-copyright"><blockquote><p>Ursprünglicher Autor: Helianthus W</p><p>Ursprünglicher Link: <a href="http://yoursite.com/2019/06/13/jvm_02/">http://yoursite.com/2019/06/13/jvm_02/</a></p><p>Copyright-Erklärung: Bitte geben Sie die Quelle des Nachdrucks an.</p></blockquote></div><div class="tags"></div><div class="post-share"><div class="social-share"><span>Aktie:</span></div></div><div class="post-nav"><a href="/2019/06/13/log_01/" class="pre"></a><a href="/2019/06/13/jvm_01/" class="next">JVM</a></div><div id="comments"></div></div></div></div><div class="layout-r"><div id="sidebar"><div class="search-pla"></div><div id="toc" class="widget"><div class="widget-title"><i class="fa fa-fei">Inhalte</i></div><ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#Java内存区域"><span class="toc-text">Java内存区域</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#局部变量表"><span class="toc-text">局部变量表</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#操作数栈"><span class="toc-text">操作数栈</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#动态链接"><span class="toc-text">动态链接</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#方法返回地址"><span class="toc-text">方法返回地址</span></a></li></ol></li></ol></div><div class="widget"><div class="widget-title"><i class="fa fa-xie"> Letzte</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/杂记/">杂记</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/关于java的反射和内省/">java反射和内省</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/Spring Doc_01/">Spring Doc_01</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/RabbitMQ_02/">RabbitMQ 配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/RabbitMQ_01/">Rabbit MQ 使用记录(一)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/network_programming01/">Netty(一)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/markdown_gfm/">markdown_gfm</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/markdown_01/">first blog</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/log_01/">log_01</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/jvm_02/">JVM内存区</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-biao"> Tags</i></div><div class="tagcloud"></div></div><div class="widget"><div class="widget-title"><i class="fa fa-archive"> Archiv</i></div><ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-you"> Blogroll</i></div><ul></ul><a href="http://www.example1.com/" title="site-name1" target="_blank">site-name1</a><ul></ul><a href="http://www.example2.com/" title="site-name2" target="_blank">site-name2</a><ul></ul><a href="http://www.example3.com/" title="site-name3" target="_blank">site-name3</a></div></div></div></div><a id="totop" href="#top"></a><div id="footer"><div class="footer-info"><p><a href="/baidusitemap.xml">Sitemap</a> |  <a href="/atom.xml">Abonnieren Sie diese Site</a> |  <a href="/about/">Kontaktieren Sie den Blogger</a></p><p>本站总访问量：<i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>次，本站总访客数:<i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>人</p><p><span> Copyright &copy;<a href="/." rel="nofollow">Helianthus W.</a></span><span> Theme by<a rel="nofollow" target="_blank" href="https://github.com/chaooo/hexo-theme-BlueLake"> BlueLake.</a></span><span> Count by<a href="http://busuanzi.ibruce.info/"> busuanzi.</a></span><span> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a></span></p></div></div></div><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><script type="text/javascript" src="/js/search.json.js?v=2.0.3"></script><script type="text/javascript" src="/js/toctotop.js?v=2.0.3" async></script><link rel="stylesheet" type="text/css" href="/share/css/share.css"><script type="text/javascript" src="/share/js/social-share.js" charset="utf-8"></script><script type="text/javascript" src="/share/js/qrcode.js" charset="utf-8"></script></body></html>

@@ -1,52 +1,27 @@
-extends base
-
-block title
-  title= page.title + ' | ' + config.title
-
-block content
-  .post
-    h1.post-title= page.title
-    .post-meta
-      if theme.comment
-        include _partial/comment_count
-        +comment-count(page.path)
-      p
-        span.date= page.date.format(theme.date_formats.post)
-        if page.categories.length > 0
-          span
-            for category in page.categories.toArray()
-              a.category(href=url_for(category.path))= category.name 
-        if theme.busuanzi == true
-          span
-            i#busuanzi_container_page_pv
-              i#busuanzi_value_page_pv
-              i= '' + __('hits')
-    .post-content
-      != page.content
-    if theme.copyright.enable
-      .post-copyright
-        blockquote
-          p=  __("copyright_author") + ": " + config.author
-          p= __("copyright_link") + ": " 
-            a(href=url_for(config.url +'/'+ page.path))= config.url +'/'+ page.path
-          p!= __("copyright_notice") + ": " + (theme.copyright.describe ? theme.copyright.describe : __("copyright_details"))
-    include _partial/tag
-    .post-share
-      include _partial/share
-    include _partial/post_nav
-    #comments
-      include _partial/comments
-
-block tocmodel
-  if theme.toc.enable == true 
-    .widget(id='toc')
-      .widget-title
-        i(class='fa fa-fei')= __('contents')
-      != toc(page.content, {list_number: theme.toc.number})
-
-block pageOnly
-  if theme.toc.enable == true 
-    script(type='text/javascript', src=url_for(theme.js) + '/toctotop.js' + '?v=' + theme.version, async)
-  else 
-    script(type='text/javascript', src=url_for(theme.js) + '/totop.js' + '?v=' + theme.version, async)
-  include _partial/comments_js
+<!DOCTYPE html><html lang="null"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>Netty(一) | Helianthus</title><link rel="stylesheet" type="text/css" href="//fonts.loli.net/css?family=Source+Code+Pro"><link rel="stylesheet" type="text/css" href="/css/style.css?v=2.0.3"><link rel="stylesheet" type="text/css" href="/css/highlight.css?v=2.0.3"><link rel="Shortcut Icon" href="/favicon.ico"><link rel="bookmark" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Netty(一)</h1><a id="logo" href="/.">Helianthus</a><p class="description"></p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> Start</i></a><a href="/archives/"><i class="fa fa-archive"> Archiv</i></a><a href="/about/"><i class="fa fa-user"> Über</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div><div id="search-form"><div id="result-mask" class="hide"></div><label><input id="search-key" type="text" autocomplete="off" placeholder="Suche"></label><div id="result-wrap" class="hide"><div id="search-result"></div></div><div class="hide"><template id="search-tpl"><div class="item"><a href="/{path}" title="{title}"><div class="title">{title}</div><div class="time">{date}</div><div class="tags">{tags}</div></a></div></template></div></div></div><div id="layout" class="layout-g"><div class="layout-l"><div class="content_container"><div class="post"><h1 class="post-title">Netty(一)</h1><div class="post-meta"><a href="/2019/06/13/network_programming01/#comments" class="comment-count"></a><p><span class="date">Jun 13, 2019</span><span><i id="busuanzi_container_page_pv"><i id="busuanzi_value_page_pv"></i><i>Schlägt</i></i></span></p></div><div class="post-content"><blockquote>
+<h4 id="Bootstrap是什么"><a href="#Bootstrap是什么" class="headerlink" title="Bootstrap是什么"></a>Bootstrap是什么</h4></blockquote>
+<p>ServerBootstrap 和 Bootstrap</p>
+<blockquote>
+<h4 id="数据的“入站”和“出站”"><a href="#数据的“入站”和“出站”" class="headerlink" title="数据的“入站”和“出站”"></a>数据的“入站”和“出站”</h4></blockquote>
+<p>入站：数据从远程主机到用户应用程序称为“入站”<br>出站：数据从用户应用程序到远程主机称为“出站”</p>
+<blockquote>
+<h4 id="数据的“编码”和“解码”"><a href="#数据的“编码”和“解码”" class="headerlink" title="数据的“编码”和“解码”"></a>数据的“编码”和“解码”</h4></blockquote>
+<p>在计算机的世界里从来都是只有0和1，若要使得计算机能够认识语言文字，就需要建立一种从从文字到0,1的映射。<br>从文字到0,1的映射称为“编码”<br>从0,1到文字的映射称为“解码”</p>
+<blockquote>
+<h5 id="计算机是如何显示文字的"><a href="#计算机是如何显示文字的" class="headerlink" title="计算机是如何显示文字的"></a>计算机是如何显示文字的</h5></blockquote>
+<p>我们知道，计算式是以二进制的形式来保存和处理数据的，也就是说，不管我们使用键盘进行输入，还是让计算机去读取某一个文本文件，计算机得到的原始内容是一些二进制序列，当需要对这些二进制序列进行显示时，计算机会按照某种“翻译机制”(也就是编码方式)，取得这些二进制序列所表示的每个文字的“轮廓描述”(点阵或矢量图)，知道了轮廓，计算机便可以将二进制序列所表示的实际的文字形状显示在屏幕上了。</p>
+<blockquote>
+<h5 id="字符集"><a href="#字符集" class="headerlink" title="字符集"></a>字符集</h5></blockquote>
+<p>将一些自然语言中的字符组成一个集合，并对集合中的每个字符制定规范化的编码方式，这个字符的集合和规范方式的编码方式就组成了一个字符集</p>
+<blockquote>
+<h5 id="字符编码"><a href="#字符编码" class="headerlink" title="字符编码"></a>字符编码</h5></blockquote>
+<p>字符编码即建立一套自然语言中的“字符”跟计算机能够存储处理的二进制数的映射规则，即在一个字符集内，用一个特定的二进制数表示一个<br>唯一的“字符”。</p>
+<blockquote>
+<h5 id="为什么需要编码"><a href="#为什么需要编码" class="headerlink" title="为什么需要编码"></a>为什么需要编码</h5></blockquote>
+<p>当数据不利于计算机处理、存储的时候，就需要对它进行编码。</p>
+<ol>
+<li>对字符进行编码是因为自然语言中的字符不利于计算机处理和存储</li>
+<li>对图片信息、视频信息、声音信息进行压缩、优化，将其格式化，是为了保证媒体资源质量的同时，尽量的节省网络带宽和本地存储的空间</li>
+<li>对URL进行编码是为了避免URL解析时发生歧义，简化解码方式</li>
+</ol>
+</div><div class="post-copyright"><blockquote><p>Ursprünglicher Autor: Helianthus W</p><p>Ursprünglicher Link: <a href="http://yoursite.com/2019/06/13/network_programming01/">http://yoursite.com/2019/06/13/network_programming01/</a></p><p>Copyright-Erklärung: Bitte geben Sie die Quelle des Nachdrucks an.</p></blockquote></div><div class="tags"></div><div class="post-share"><div class="social-share"><span>Aktie:</span></div></div><div class="post-nav"><a href="/2019/06/13/RabbitMQ_01/" class="pre">Rabbit MQ 使用记录(一)</a><a href="/2019/06/13/markdown_gfm/" class="next"></a></div><div id="comments"></div></div></div></div><div class="layout-r"><div id="sidebar"><div class="search-pla"></div><div id="toc" class="widget"><div class="widget-title"><i class="fa fa-fei">Inhalte</i></div><ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#Bootstrap是什么"><span class="toc-text">Bootstrap是什么</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#数据的“入站”和“出站”"><span class="toc-text">数据的“入站”和“出站”</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#数据的“编码”和“解码”"><span class="toc-text">数据的“编码”和“解码”</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#计算机是如何显示文字的"><span class="toc-text">计算机是如何显示文字的</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#字符集"><span class="toc-text">字符集</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#字符编码"><span class="toc-text">字符编码</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#为什么需要编码"><span class="toc-text">为什么需要编码</span></a></li></ol></li></ol></div><div class="widget"><div class="widget-title"><i class="fa fa-xie"> Letzte</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/杂记/">杂记</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/关于java的反射和内省/">java反射和内省</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/Spring Doc_01/">Spring Doc_01</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/RabbitMQ_02/">RabbitMQ 配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/RabbitMQ_01/">Rabbit MQ 使用记录(一)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/network_programming01/">Netty(一)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/markdown_gfm/">markdown_gfm</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/markdown_01/">first blog</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/log_01/">log_01</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/jvm_02/">JVM内存区</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-biao"> Tags</i></div><div class="tagcloud"></div></div><div class="widget"><div class="widget-title"><i class="fa fa-archive"> Archiv</i></div><ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-you"> Blogroll</i></div><ul></ul><a href="http://www.example1.com/" title="site-name1" target="_blank">site-name1</a><ul></ul><a href="http://www.example2.com/" title="site-name2" target="_blank">site-name2</a><ul></ul><a href="http://www.example3.com/" title="site-name3" target="_blank">site-name3</a></div></div></div></div><a id="totop" href="#top"></a><div id="footer"><div class="footer-info"><p><a href="/baidusitemap.xml">Sitemap</a> |  <a href="/atom.xml">Abonnieren Sie diese Site</a> |  <a href="/about/">Kontaktieren Sie den Blogger</a></p><p>本站总访问量：<i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>次，本站总访客数:<i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>人</p><p><span> Copyright &copy;<a href="/." rel="nofollow">Helianthus W.</a></span><span> Theme by<a rel="nofollow" target="_blank" href="https://github.com/chaooo/hexo-theme-BlueLake"> BlueLake.</a></span><span> Count by<a href="http://busuanzi.ibruce.info/"> busuanzi.</a></span><span> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a></span></p></div></div></div><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><script type="text/javascript" src="/js/search.json.js?v=2.0.3"></script><script type="text/javascript" src="/js/toctotop.js?v=2.0.3" async></script><link rel="stylesheet" type="text/css" href="/share/css/share.css"><script type="text/javascript" src="/share/js/social-share.js" charset="utf-8"></script><script type="text/javascript" src="/share/js/qrcode.js" charset="utf-8"></script></body></html>

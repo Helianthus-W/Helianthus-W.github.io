@@ -1,52 +1,123 @@
-extends base
-
-block title
-  title= page.title + ' | ' + config.title
-
-block content
-  .post
-    h1.post-title= page.title
-    .post-meta
-      if theme.comment
-        include _partial/comment_count
-        +comment-count(page.path)
-      p
-        span.date= page.date.format(theme.date_formats.post)
-        if page.categories.length > 0
-          span
-            for category in page.categories.toArray()
-              a.category(href=url_for(category.path))= category.name 
-        if theme.busuanzi == true
-          span
-            i#busuanzi_container_page_pv
-              i#busuanzi_value_page_pv
-              i= '' + __('hits')
-    .post-content
-      != page.content
-    if theme.copyright.enable
-      .post-copyright
-        blockquote
-          p=  __("copyright_author") + ": " + config.author
-          p= __("copyright_link") + ": " 
-            a(href=url_for(config.url +'/'+ page.path))= config.url +'/'+ page.path
-          p!= __("copyright_notice") + ": " + (theme.copyright.describe ? theme.copyright.describe : __("copyright_details"))
-    include _partial/tag
-    .post-share
-      include _partial/share
-    include _partial/post_nav
-    #comments
-      include _partial/comments
-
-block tocmodel
-  if theme.toc.enable == true 
-    .widget(id='toc')
-      .widget-title
-        i(class='fa fa-fei')= __('contents')
-      != toc(page.content, {list_number: theme.toc.number})
-
-block pageOnly
-  if theme.toc.enable == true 
-    script(type='text/javascript', src=url_for(theme.js) + '/toctotop.js' + '?v=' + theme.version, async)
-  else 
-    script(type='text/javascript', src=url_for(theme.js) + '/totop.js' + '?v=' + theme.version, async)
-  include _partial/comments_js
+<!DOCTYPE html><html lang="null"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>开始在GitHub上的写作之旅 | Helianthus</title><link rel="stylesheet" type="text/css" href="//fonts.loli.net/css?family=Source+Code+Pro"><link rel="stylesheet" type="text/css" href="/css/style.css?v=2.0.3"><link rel="stylesheet" type="text/css" href="/css/highlight.css?v=2.0.3"><link rel="Shortcut Icon" href="/favicon.ico"><link rel="bookmark" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">开始在GitHub上的写作之旅</h1><a id="logo" href="/.">Helianthus</a><p class="description"></p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> Start</i></a><a href="/archives/"><i class="fa fa-archive"> Archiv</i></a><a href="/about/"><i class="fa fa-user"> Über</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div><div id="search-form"><div id="result-mask" class="hide"></div><label><input id="search-key" type="text" autocomplete="off" placeholder="Suche"></label><div id="result-wrap" class="hide"><div id="search-result"></div></div><div class="hide"><template id="search-tpl"><div class="item"><a href="/{path}" title="{title}"><div class="title">{title}</div><div class="time">{date}</div><div class="tags">{tags}</div></a></div></template></div></div></div><div id="layout" class="layout-g"><div class="layout-l"><div class="content_container"><div class="post"><h1 class="post-title">开始在GitHub上的写作之旅</h1><div class="post-meta"><a href="/2019/04/24/writing_on_github01/#comments" class="comment-count"></a><p><span class="date">Apr 24, 2019</span><span><i id="busuanzi_container_page_pv"><i id="busuanzi_value_page_pv"></i><i>Schlägt</i></i></span></p></div><div class="post-content"><p>刚刚开始学习使用markdown来写博客，记录GFM的部分语法用法。<br>文内内容基本源自<a href="https://help.github.com/en/articles/basic-writing-and-formatting-syntax" target="_blank" rel="noopener">GFS基础语法</a>。
+<strong>GFS</strong> : GitHub使用了一种叫做GitHub Flavored Markdown的文本格式化语法，相比于常规的Markdown语法，它增加了一些独特的语法风格</p>
+<h3 id="GFS基本的编写语法"><a href="#GFS基本的编写语法" class="headerlink" title="GFS基本的编写语法"></a>GFS基本的编写语法</h3><p>使用简单的语法在GitHub上来创作复风格的文章和代码</p>
+<h5 id="一-标题"><a href="#一-标题" class="headerlink" title="(一)标题"></a>(一)标题</h5><pre><code>在文本前增加一个或者多个#(最多6个)即可创建一个标题，要添加#的数量取决于你的标题的尺寸</code></pre><h5 id="二-文本样式"><a href="#二-文本样式" class="headerlink" title="(二)文本样式"></a>(二)文本样式</h5><pre><code>Bold： 在文本前后增加**或者是__即可为文本加粗</code></pre><blockquote>
+<p>  example: **this is a bold text**  -&gt;  <strong>this is a bold text</strong></p>
+</blockquote>
+<pre><code>Italic：在文本前后增加*或者是_即可使字体倾斜</code></pre><blockquote>
+<p>example: *this is a italic text*  -&gt; <em>this is a italic text</em></p>
+</blockquote>
+<pre><code>Strikethrough：在文本前后增加~~即可为文本增加删除线</code></pre><blockquote>
+<p>example: ~~this is a text with strikethrough~~  -&gt;  <del>this is a text with strikethrough</del></p>
+</blockquote>
+<pre><code>Bold and Italic：在文本前后\*\*\_即可使文本加粗并使其倾斜(即\*\*和\_组合使用)</code></pre><blockquote>
+<p>example: **_this is a bold and italic text_**  -&gt;  <strong><em>this is a bold and italic text</em></strong></p>
+</blockquote>
+<h4 id="三-引用文本"><a href="#三-引用文本" class="headerlink" title="(三)引用文本"></a>(三)引用文本</h4><pre><code>在文本前增加&gt;即可创建引用文本</code></pre><blockquote>
+<p>example: &gt; this is a quating text</p>
+</blockquote>
+<blockquote>
+<p>this is a quating text</p>
+</blockquote>
+<h4 id="四-引用代码"><a href="#四-引用代码" class="headerlink" title="(四)引用代码"></a>(四)引用代码</h4><pre><code>在代码文本或者命令文本的前后增加一个`,被`包裹的文本不会被格式化</code></pre><blockquote>
+<p>example: use `git status` to list all new or modified files that haven`t yet been commit;</p>
+</blockquote>
+<blockquote>
+<p>use <code>git status</code> to list all new or modified files that haven`t yet been commit;</p>
+</blockquote>
+<pre><code>如果想要代码文本或者命令文本被格式化，只需要在文本块的上下行使用<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&gt; example:  </span><br><span class="line">  </span><br><span class="line">```java</span><br><span class="line">    public class App &#123;</span><br><span class="line">        public static void main(String[] args) &#123;</span><br><span class="line">            System.out.println(&quot;hello world!&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></code></pre><h4 id="五-链接"><a href="#五-链接" class="headerlink" title="(五)链接"></a>(五)链接</h4><pre><code>使用[]来包含链接文本，并且在其后面使用()来包含URL即可创建一个行内链接</code></pre><blockquote>
+<p>example: [link text](link url)  -&gt;  <a href="https://helianthus-w.github.io" target="_blank" rel="noopener">Helianthus-W的空间</a></p>
+</blockquote>
+<h4 id="六-分段链接"><a href="#六-分段链接" class="headerlink" title="(六)分段链接"></a>(六)分段链接</h4><pre><code>Github允许在页面中直接链接到页面的模块部某块分段内容，鼠标悬停在该段内容上即可显示链接</code></pre><h4 id="七-相对链接"><a href="#七-相对链接" class="headerlink" title="(七)相对链接"></a>(七)相对链接</h4><pre><code>Github允许在页面中定义相对链接或者是图像路径来帮助读者浏览你的仓库中的其他文件</code></pre><h4 id="八-列表"><a href="#八-列表" class="headerlink" title="(八)列表"></a>(八)列表</h4><pre><code>在文本前面增加-或者是*即可创建一个无序的列表</code></pre><blockquote>
+<p>example: </p>
+</blockquote>
+<blockquote>
+<p>* first line<br>* second line<br>* third line</p>
+</blockquote>
+<blockquote>
+</blockquote>
+<ul>
+<li><p>first line</p>
+<blockquote>
+</blockquote>
+</li>
+<li><p>second line</p>
+<blockquote>
+</blockquote>
+</li>
+<li><p>third line</p>
+<p>  如果想要创建一个有序列表，在每一行前面增加一个数字即可</p>
+</li>
+</ul>
+<blockquote>
+<p>example: </p>
+</blockquote>
+<blockquote>
+<p>\1. first line<br>\2. second line<br>\3. third line</p>
+</blockquote>
+<blockquote>
+</blockquote>
+<ol>
+<li><p>first line </p>
+<blockquote>
+</blockquote>
+</li>
+<li><p>second line</p>
+<blockquote>
+</blockquote>
+</li>
+<li><p>third line</p>
+<p> 如果想要创建一个嵌套列表，只需要在某个列表项的下方使用缩进来增加新的列表即可</p>
+</li>
+</ol>
+<blockquote>
+<p>example: </p>
+</blockquote>
+<blockquote>
+</blockquote>
+<ol>
+<li>first line<ul>
+<li>one</li>
+<li>two</li>
+<li>three<blockquote>
+</blockquote>
+</li>
+</ul>
+</li>
+<li>second line <ol>
+<li>one </li>
+<li>two</li>
+<li>three<blockquote>
+</blockquote>
+</li>
+</ol>
+</li>
+<li>third line<ul>
+<li>one</li>
+</ul>
+<ol>
+<li>one</li>
+<li>two</li>
+</ol>
+</li>
+</ol>
+<h4 id="九-任务列表"><a href="#九-任务列表" class="headerlink" title="(九)任务列表"></a>(九)任务列表</h4><pre><code>在文本前使用带有规整空格符的-和[ ] ，即&quot;- [] &quot;即可创建任务列表，如果要标记列表项为已完成，使用&quot; [x] &quot;即可</code></pre><blockquote>
+<p>example: </p>
+</blockquote>
+<blockquote>
+<p>- [x] first task<br>- [ ] second task<br>- [ ] third task</p>
+</blockquote>
+<blockquote>
+<ul>
+<li><input checked disabled type="checkbox"> first task</li>
+<li><input disabled type="checkbox"> second task</li>
+<li><input disabled type="checkbox"> third task</li>
+</ul>
+</blockquote>
+<pre><code>如果文本是使用()开头的，则()需要使用\进行转义</code></pre><blockquote>
+<p>example:<br>\- \[x\] \( this is a text with parentheses \)  -&gt;  - [x] ( this is a text with parentheses )</p>
+</blockquote>
+<h4 id="十-提醒-用户-团队"><a href="#十-提醒-用户-团队" class="headerlink" title="(十)提醒 用户/团队"></a>(十)提醒 用户/团队</h4><pre><code>在用户名或者是团队名前增加@即可向他们发送提醒。这将会触发一个通知并使得他们能够关注到这个会话。如果你修改了被提及人的评论，他们也会收到通知</code></pre><h4 id="十一-引用问题及推送请求"><a href="#十一-引用问题及推送请求" class="headerlink" title="(十一)引用问题及推送请求"></a>(十一)引用问题及推送请求</h4><pre><code>使用#即可在仓库中提出问题或者推送请求的建议列表，在#后继续键入问题或者推送请求的编号或者标题来选择要引用的列表项，使用enter键或者是tab键来补齐</code></pre><h4 id="十二-内容附件"><a href="#十二-内容附件" class="headerlink" title="(十二)内容附件"></a>(十二)内容附件</h4><pre><code>部分Github应用提供了用户在Github注册的域名中的链接信息，Github可以在一个问题或者是推送请求中引用这些应用提供的链接</code></pre><h4 id="十三-使用表情"><a href="#十三-使用表情" class="headerlink" title="(十三)使用表情"></a>(十三)使用表情</h4><pre><code>如果想要使用表情，只需:EMOJICODE:即可在文本中使用表情</code></pre><blockquote>
+<p>example:  :smile:</p>
+</blockquote>
+<h4 id="十四-段落和换行"><a href="#十四-段落和换行" class="headerlink" title="(十四)段落和换行"></a>(十四)段落和换行</h4><pre><code>在文本行之间添加空行即可形成一个新的段落</code></pre><h4 id="十五-忽略markdown格式化"><a href="#十五-忽略markdown格式化" class="headerlink" title="(十五)忽略markdown格式化"></a>(十五)忽略markdown格式化</h4><pre><code>在markdown语法字符前使用\来通知GitHub来忽略markdown对文本的格式化</code></pre></div><div class="post-copyright"><blockquote><p>Ursprünglicher Autor: Helianthus W</p><p>Ursprünglicher Link: <a href="http://yoursite.com/2019/04/24/writing_on_github01/">http://yoursite.com/2019/04/24/writing_on_github01/</a></p><p>Copyright-Erklärung: Bitte geben Sie die Quelle des Nachdrucks an.</p></blockquote></div><div class="tags"></div><div class="post-share"><div class="social-share"><span>Aktie:</span></div></div><div class="post-nav"><a href="/2019/04/25/japanese_01/" class="pre">日语50音学习系列(一)</a><a href="/2019/04/24/markdown简单使用/" class="next">first blog</a></div><div id="comments"></div></div></div></div><div class="layout-r"><div id="sidebar"><div class="search-pla"></div><div id="toc" class="widget"><div class="widget-title"><i class="fa fa-fei">Inhalte</i></div><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#GFS基本的编写语法"><span class="toc-text">GFS基本的编写语法</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#一-标题"><span class="toc-text">(一)标题</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#二-文本样式"><span class="toc-text">(二)文本样式</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#三-引用文本"><span class="toc-text">(三)引用文本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#四-引用代码"><span class="toc-text">(四)引用代码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#五-链接"><span class="toc-text">(五)链接</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#六-分段链接"><span class="toc-text">(六)分段链接</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#七-相对链接"><span class="toc-text">(七)相对链接</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#八-列表"><span class="toc-text">(八)列表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#九-任务列表"><span class="toc-text">(九)任务列表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#十-提醒-用户-团队"><span class="toc-text">(十)提醒 用户/团队</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#十一-引用问题及推送请求"><span class="toc-text">(十一)引用问题及推送请求</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#十二-内容附件"><span class="toc-text">(十二)内容附件</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#十三-使用表情"><span class="toc-text">(十三)使用表情</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#十四-段落和换行"><span class="toc-text">(十四)段落和换行</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#十五-忽略markdown格式化"><span class="toc-text">(十五)忽略markdown格式化</span></a></li></ol></div><div class="widget"><div class="widget-title"><i class="fa fa-xie"> Letzte</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/杂记/">杂记</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/关于java的反射和内省/">java反射和内省</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/Spring Doc_01/">Spring Doc_01</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/RabbitMQ_02/">RabbitMQ 配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/RabbitMQ_01/">Rabbit MQ 使用记录(一)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/network_programming01/">Netty(一)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/markdown_gfm/">markdown_gfm</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/markdown_01/">first blog</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/log_01/">log_01</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/jvm_02/">JVM内存区</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-biao"> Tags</i></div><div class="tagcloud"></div></div><div class="widget"><div class="widget-title"><i class="fa fa-archive"> Archiv</i></div><ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-you"> Blogroll</i></div><ul></ul><a href="http://www.example1.com/" title="site-name1" target="_blank">site-name1</a><ul></ul><a href="http://www.example2.com/" title="site-name2" target="_blank">site-name2</a><ul></ul><a href="http://www.example3.com/" title="site-name3" target="_blank">site-name3</a></div></div></div></div><a id="totop" href="#top"></a><div id="footer"><div class="footer-info"><p><a href="/baidusitemap.xml">Sitemap</a> |  <a href="/atom.xml">Abonnieren Sie diese Site</a> |  <a href="/about/">Kontaktieren Sie den Blogger</a></p><p>本站总访问量：<i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>次，本站总访客数:<i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>人</p><p><span> Copyright &copy;<a href="/." rel="nofollow">Helianthus W.</a></span><span> Theme by<a rel="nofollow" target="_blank" href="https://github.com/chaooo/hexo-theme-BlueLake"> BlueLake.</a></span><span> Count by<a href="http://busuanzi.ibruce.info/"> busuanzi.</a></span><span> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a></span></p></div></div></div><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><script type="text/javascript" src="/js/search.json.js?v=2.0.3"></script><script type="text/javascript" src="/js/toctotop.js?v=2.0.3" async></script><link rel="stylesheet" type="text/css" href="/share/css/share.css"><script type="text/javascript" src="/share/js/social-share.js" charset="utf-8"></script><script type="text/javascript" src="/share/js/qrcode.js" charset="utf-8"></script></body></html>

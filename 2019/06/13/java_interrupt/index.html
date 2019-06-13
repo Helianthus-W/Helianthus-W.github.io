@@ -1,52 +1,58 @@
-extends base
+<!DOCTYPE html><html lang="null"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>java中断机制 | Helianthus</title><link rel="stylesheet" type="text/css" href="//fonts.loli.net/css?family=Source+Code+Pro"><link rel="stylesheet" type="text/css" href="/css/style.css?v=2.0.3"><link rel="stylesheet" type="text/css" href="/css/highlight.css?v=2.0.3"><link rel="Shortcut Icon" href="/favicon.ico"><link rel="bookmark" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">java中断机制</h1><a id="logo" href="/.">Helianthus</a><p class="description"></p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> Start</i></a><a href="/archives/"><i class="fa fa-archive"> Archiv</i></a><a href="/about/"><i class="fa fa-user"> Über</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div><div id="search-form"><div id="result-mask" class="hide"></div><label><input id="search-key" type="text" autocomplete="off" placeholder="Suche"></label><div id="result-wrap" class="hide"><div id="search-result"></div></div><div class="hide"><template id="search-tpl"><div class="item"><a href="/{path}" title="{title}"><div class="title">{title}</div><div class="time">{date}</div><div class="tags">{tags}</div></a></div></template></div></div></div><div id="layout" class="layout-g"><div class="layout-l"><div class="content_container"><div class="post"><h1 class="post-title">java中断机制</h1><div class="post-meta"><a href="/2019/06/13/java_interrupt/#comments" class="comment-count"></a><p><span class="date">Jun 13, 2019</span><span><i id="busuanzi_container_page_pv"><i id="busuanzi_value_page_pv"></i><i>Schlägt</i></i></span></p></div><div class="post-content"><h4 id="java中线程的状态定义"><a href="#java中线程的状态定义" class="headerlink" title="java中线程的状态定义"></a>java中线程的状态定义</h4><ol>
+<li><p>NEW ： 线程未启动的状态</p>
+</li>
+<li><p>RUNNABLE ： 线程可运行的状态<br> 处于运行状态的线程在java虚拟机中执行但是它可能会等待来自操作系统的其他资源，比如处理器。</p>
+</li>
+<li><p>BLOCKED ： 线程阻塞等待获取监控锁的状态<br> 处于阻塞状态的线程正在等待监控锁用于进入同步代码块/同步方法或者是被调用后重入同步代码块/同步方法</p>
+</li>
+<li><p>WAITING ： 线程等待的状态<br> 调用如下方法时线程会进入等待状态：</p>
+<ul>
+<li>Object.wait</li>
+<li>Thread.join</li>
+<li>LockSupport.part<br>处于等待状态的线程是在等待另一个线程的特定的操作。例如，一个线程调用了一个对象的Object.wait就在等待另一个线程调用该对象的<br>Object.notify或者是Object.notifyAll。一个线程调用了Thread.join在等待一个特定线程的终止。</li>
+</ul>
+</li>
+<li><p>TIMED_WAITING ： 带有特定等待时间的线程的等待状态<br> 通过调用带有一个合法的等待时间的如下方法会使线程进入特定等待时间的等待状态：</p>
+<ul>
+<li>Thread.sleep</li>
+<li>Object.wait</li>
+<li>Thread.join</li>
+<li>LockSupport.parkNanos</li>
+<li>LockSupport.parkUntil</li>
+</ul>
+</li>
+<li><p>TERMINATED ： 线程的终止状态<br> 线程执行结束的状态</p>
+<p> 在java中没有提供一种安全直接的方法来停止某个线程，但是java提供了中断机制。</p>
+</li>
+</ol>
+<h4 id="java中断原理"><a href="#java中断原理" class="headerlink" title="java中断原理"></a>java中断原理</h4><pre><code>java中断机制是一种协作机制，也就是说通过中断并不能直接终止另一个线程，而需要被中断的线程自己处理。(被中断的线程并不会立马退出运行)
 
-block title
-  title= page.title + ' | ' + config.title
+在java中断模型中，每个线程对象里都有一个boolean类型的标识代表着是否有中断请求。例如，在Thread1想要中断Thread2，只需要在
+Thread1中将Thread2的中断标识符设置为true，然后Thread2可以选择在合适的时候处理该中断请求，甚至可以不理会该请求，就像线程没有被中断一样。</code></pre><h4 id="中断的处理"><a href="#中断的处理" class="headerlink" title="中断的处理"></a>中断的处理</h4><blockquote>
+<p>处理时机</p>
+</blockquote>
+<pre><code>作为一种协作机制，java不会强求被中断线程一定要在某个点进行处理。实际上，被中断线程只需要在合适的时候处理即可，如果没有合适的时间点，甚至可以不处理，这时候在任务处理层面，就跟没有调用中断方法一样。“合适的时候”与线程正在处理的业务逻辑紧密相关。例如，每次迭代的时候，进入一个可能阻塞且无法中断的方法之前等，但是多半不会出现在某一临界区更新另一个对象状态的时候，因为这可能会导致对象处于不一致的状态。
 
-block content
-  .post
-    h1.post-title= page.title
-    .post-meta
-      if theme.comment
-        include _partial/comment_count
-        +comment-count(page.path)
-      p
-        span.date= page.date.format(theme.date_formats.post)
-        if page.categories.length > 0
-          span
-            for category in page.categories.toArray()
-              a.category(href=url_for(category.path))= category.name 
-        if theme.busuanzi == true
-          span
-            i#busuanzi_container_page_pv
-              i#busuanzi_value_page_pv
-              i= '' + __('hits')
-    .post-content
-      != page.content
-    if theme.copyright.enable
-      .post-copyright
-        blockquote
-          p=  __("copyright_author") + ": " + config.author
-          p= __("copyright_link") + ": " 
-            a(href=url_for(config.url +'/'+ page.path))= config.url +'/'+ page.path
-          p!= __("copyright_notice") + ": " + (theme.copyright.describe ? theme.copyright.describe : __("copyright_details"))
-    include _partial/tag
-    .post-share
-      include _partial/share
-    include _partial/post_nav
-    #comments
-      include _partial/comments
-
-block tocmodel
-  if theme.toc.enable == true 
-    .widget(id='toc')
-      .widget-title
-        i(class='fa fa-fei')= __('contents')
-      != toc(page.content, {list_number: theme.toc.number})
-
-block pageOnly
-  if theme.toc.enable == true 
-    script(type='text/javascript', src=url_for(theme.js) + '/toctotop.js' + '?v=' + theme.version, async)
-  else 
-    script(type='text/javascript', src=url_for(theme.js) + '/totop.js' + '?v=' + theme.version, async)
-  include _partial/comments_js
+处理时机决定着程序的效率与中断响应的灵敏性。频繁的检查中断状态可能会使程序执行效率下降，相反，检查的较少可能会使中断请求得不到及时响应。如果发出中断请求后，被中断的请求执行一段时间不会给系统带来灾难，那么就可以将中断处理放到方便检查中断，同时又能从一定程度上保证响应灵敏程度的地方。当程序的性能指标比较关键时，可能需要建立一个测试模型来分析最佳的中断检测点，以平衡性能和响应灵敏性。</code></pre><blockquote>
+<p>处理方式</p>
+</blockquote>
+<ol>
+<li><p>中断状态的管理</p>
+<p> 一般来说，当可能阻塞的方法声明中有抛出InterruptedException则暗示该方法是可中断的，如果程序捕获到这些可中断的阻塞方法抛出的<br> InterruptedException或检测到中断后，一般有以下两个通用处理原则：</p>
+<ol>
+<li>如果遇到的是可中断的阻塞方法抛出InterruptedException，可以继续向方法调用栈的上层抛出该异常，如果是检测到中断，则可清除中断状态并抛出InterruptedException，是当前方法也成为一个可中断的方法。</li>
+<li>若有时候不方便在方法上抛出InterruptedException，比如要实现的某个接口中的方法签名上没有throws InterruptedException，这时候就可以捕获可中断方法的InterruptedException并通过Thread.currentThread.interrupt()来重新设置中断状态。如果是检测并清除了中断状态，也是如此。</li>
+</ol>
+</li>
+<li><p>中断响应</p>
+<p> 程序中发现中断的响应应视情况而定。有些程序可能一检测到中断就立马将线程终止，有些可能是退出当前执行的任务，继续执行下一个任务。作为一种协作机制，这要与中断方协商好，当调用interrupt会发生些什么事情是事先知道的，如做一些事务回滚操作，一些清理工作，一些补偿操作等，如果不确定调用某个线程的interrupt后该线程会作出什么样的响应，那么就不应当中断该线程。</p>
+</li>
+</ol>
+<h4 id="中断的使用"><a href="#中断的使用" class="headerlink" title="中断的使用"></a>中断的使用</h4><pre><code>通常中断的使用场景有以下几个：</code></pre><ol>
+<li>点击桌面应用中的取消按钮时</li>
+<li>某个操作超过了一定的执行时间限制需要终止时 </li>
+<li>多个线程多相同的事情，只要一个线程成功其他线程都可以取消时</li>
+<li>一组线程中的一个或者多个出现错误导致整组都无法继续时</li>
+<li>当一个应用或服务需要停止时</li>
+</ol>
+</div><div class="post-copyright"><blockquote><p>Ursprünglicher Autor: Helianthus W</p><p>Ursprünglicher Link: <a href="http://yoursite.com/2019/06/13/java_interrupt/">http://yoursite.com/2019/06/13/java_interrupt/</a></p><p>Copyright-Erklärung: Bitte geben Sie die Quelle des Nachdrucks an.</p></blockquote></div><div class="tags"></div><div class="post-share"><div class="social-share"><span>Aktie:</span></div></div><div class="post-nav"><a href="/2019/06/13/java_note_01/" class="pre">java中静态方法和单例模式</a><a href="/2019/06/13/first_blog/" class="next">first blog</a></div><div id="comments"></div></div></div></div><div class="layout-r"><div id="sidebar"><div class="search-pla"></div><div id="toc" class="widget"><div class="widget-title"><i class="fa fa-fei">Inhalte</i></div><ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#java中线程的状态定义"><span class="toc-text">java中线程的状态定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#java中断原理"><span class="toc-text">java中断原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#中断的处理"><span class="toc-text">中断的处理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#中断的使用"><span class="toc-text">中断的使用</span></a></li></ol></div><div class="widget"><div class="widget-title"><i class="fa fa-xie"> Letzte</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/杂记/">杂记</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/关于java的反射和内省/">java反射和内省</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/Spring Doc_01/">Spring Doc_01</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/RabbitMQ_02/">RabbitMQ 配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/RabbitMQ_01/">Rabbit MQ 使用记录(一)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/network_programming01/">Netty(一)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/markdown_gfm/">markdown_gfm</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/markdown_01/">first blog</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/log_01/">log_01</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/jvm_02/">JVM内存区</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-biao"> Tags</i></div><div class="tagcloud"></div></div><div class="widget"><div class="widget-title"><i class="fa fa-archive"> Archiv</i></div><ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-you"> Blogroll</i></div><ul></ul><a href="http://www.example1.com/" title="site-name1" target="_blank">site-name1</a><ul></ul><a href="http://www.example2.com/" title="site-name2" target="_blank">site-name2</a><ul></ul><a href="http://www.example3.com/" title="site-name3" target="_blank">site-name3</a></div></div></div></div><a id="totop" href="#top"></a><div id="footer"><div class="footer-info"><p><a href="/baidusitemap.xml">Sitemap</a> |  <a href="/atom.xml">Abonnieren Sie diese Site</a> |  <a href="/about/">Kontaktieren Sie den Blogger</a></p><p>本站总访问量：<i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>次，本站总访客数:<i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>人</p><p><span> Copyright &copy;<a href="/." rel="nofollow">Helianthus W.</a></span><span> Theme by<a rel="nofollow" target="_blank" href="https://github.com/chaooo/hexo-theme-BlueLake"> BlueLake.</a></span><span> Count by<a href="http://busuanzi.ibruce.info/"> busuanzi.</a></span><span> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a></span></p></div></div></div><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><script type="text/javascript" src="/js/search.json.js?v=2.0.3"></script><script type="text/javascript" src="/js/toctotop.js?v=2.0.3" async></script><link rel="stylesheet" type="text/css" href="/share/css/share.css"><script type="text/javascript" src="/share/js/social-share.js" charset="utf-8"></script><script type="text/javascript" src="/share/js/qrcode.js" charset="utf-8"></script></body></html>

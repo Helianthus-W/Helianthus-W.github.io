@@ -1,52 +1,69 @@
-extends base
-
-block title
-  title= page.title + ' | ' + config.title
-
-block content
-  .post
-    h1.post-title= page.title
-    .post-meta
-      if theme.comment
-        include _partial/comment_count
-        +comment-count(page.path)
-      p
-        span.date= page.date.format(theme.date_formats.post)
-        if page.categories.length > 0
-          span
-            for category in page.categories.toArray()
-              a.category(href=url_for(category.path))= category.name 
-        if theme.busuanzi == true
-          span
-            i#busuanzi_container_page_pv
-              i#busuanzi_value_page_pv
-              i= '' + __('hits')
-    .post-content
-      != page.content
-    if theme.copyright.enable
-      .post-copyright
-        blockquote
-          p=  __("copyright_author") + ": " + config.author
-          p= __("copyright_link") + ": " 
-            a(href=url_for(config.url +'/'+ page.path))= config.url +'/'+ page.path
-          p!= __("copyright_notice") + ": " + (theme.copyright.describe ? theme.copyright.describe : __("copyright_details"))
-    include _partial/tag
-    .post-share
-      include _partial/share
-    include _partial/post_nav
-    #comments
-      include _partial/comments
-
-block tocmodel
-  if theme.toc.enable == true 
-    .widget(id='toc')
-      .widget-title
-        i(class='fa fa-fei')= __('contents')
-      != toc(page.content, {list_number: theme.toc.number})
-
-block pageOnly
-  if theme.toc.enable == true 
-    script(type='text/javascript', src=url_for(theme.js) + '/toctotop.js' + '?v=' + theme.version, async)
-  else 
-    script(type='text/javascript', src=url_for(theme.js) + '/totop.js' + '?v=' + theme.version, async)
-  include _partial/comments_js
+<!DOCTYPE html><html lang="null"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>JVM | Helianthus</title><link rel="stylesheet" type="text/css" href="//fonts.loli.net/css?family=Source+Code+Pro"><link rel="stylesheet" type="text/css" href="/css/style.css?v=2.0.3"><link rel="stylesheet" type="text/css" href="/css/highlight.css?v=2.0.3"><link rel="Shortcut Icon" href="/favicon.ico"><link rel="bookmark" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">JVM</h1><a id="logo" href="/.">Helianthus</a><p class="description"></p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> Start</i></a><a href="/archives/"><i class="fa fa-archive"> Archiv</i></a><a href="/about/"><i class="fa fa-user"> Über</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div><div id="search-form"><div id="result-mask" class="hide"></div><label><input id="search-key" type="text" autocomplete="off" placeholder="Suche"></label><div id="result-wrap" class="hide"><div id="search-result"></div></div><div class="hide"><template id="search-tpl"><div class="item"><a href="/{path}" title="{title}"><div class="title">{title}</div><div class="time">{date}</div><div class="tags">{tags}</div></a></div></template></div></div></div><div id="layout" class="layout-g"><div class="layout-l"><div class="content_container"><div class="post"><h1 class="post-title">JVM</h1><div class="post-meta"><a href="/2019/06/13/jvm_01/#comments" class="comment-count"></a><p><span class="date">Jun 13, 2019</span><span><i id="busuanzi_container_page_pv"><i id="busuanzi_value_page_pv"></i><i>Schlägt</i></i></span></p></div><div class="post-content"><h4 id="JVM-Java-Virtual-Machine"><a href="#JVM-Java-Virtual-Machine" class="headerlink" title="JVM - Java Virtual Machine"></a>JVM - Java Virtual Machine</h4><pre><code>JVM是一种用于计算设备的规范，是一个虚构的计算机软件实现，一个运行byte code字节码程序的容器。JVM是基于栈结构的。
+JVM使用Java字节码的方式，作为Java用户语言和机器语言之间的中间语言。实现了一个通用的、机器无关的执行平台。</code></pre><blockquote>
+<p>JVM特点</p>
+</blockquote>
+<ol>
+<li>符号引用<br> 除了基本类型以外的数据（类和接口）都是通过符号来引用的，而不是通过显示地使用内存地址来引用</li>
+<li>垃圾收集<br> 一个类的实例是由用户程序创建和垃圾回收自动销毁</li>
+<li>网络字节顺序<br> Java class文件用网络字节码顺序来进行存储，保证了小端的Intel x86架构和大端的RISC系列的架构之间的无关性</li>
+</ol>
+<blockquote>
+<p>JVM声明周期</p>
+</blockquote>
+<ul>
+<li>启动： 任何一个拥有main方法的class都可以作为JVM实例运行的起点</li>
+<li>运行： main函数为起点，程序中的其他线程均有它启动，包括damon守护线程和non-daemon普通线程。daemon是JVM自己使用的线程比如GC线程，<pre><code>main方法的初始线程是non-daemon。</code></pre></li>
+<li>消亡： 所有线程终止时，JVM实例结束生命</li>
+</ul>
+<blockquote>
+<p>JVM组成架构</p>
+</blockquote>
+<ol>
+<li><p>类加载器(Class Loader) : 负责加载程序中的类型(类和接口)，并赋予唯一的名字予以标识</p>
+<p> JDK默认提供了三种Class Loader：</p>
+<ul>
+<li><p>Bootstrap ClassLoader -&gt; 负责$JAVA_HOME/jre/lib, $JAVA_HOME/jre/classes以及-Xbootclasspath参数指定路径下的类</p>
+</li>
+<li><p>Extension ClassLoader -&gt; 负载$JAVA_HOME/jre/lib/ext下的所有classes目录以及java.ext.dirs系统变量指定路径下的类</p>
+</li>
+<li><p>Application ClassLoader -&gt; classpath指定的路径下的类或jar文档，它是java程序的默认类加载器</p>
+<p>三种类加载器的关系为：<br>Bootstrap ClassLoader是在JVM启动后初始化的；<br>Bootstrap ClassLoader负责加载Extension ClassLoader，并且将Extension ClassLoader的父加载器设置为Bootstrap ClassLoader；<br>Bootstrap ClassLoader加载完Extension ClassLoader之后，就会加载Application ClassLoader，并将Application ClassLoader的父加载器设置为Extension ClassLoader</p>
+</li>
+</ul>
+</li>
+</ol>
+<h6 id="双亲委托机制"><a href="#双亲委托机制" class="headerlink" title="双亲委托机制"></a>双亲委托机制</h6><pre><code>双亲委托： 
+当前ClassLoader首先从自己已经加载的类中查询此类是否已经加载，如果已经加载则直接返回原来已加载的类；
+当前ClassLoader的缓存中没有找到被加载的类的时候，委托父加载器去加载，父加载器采用同样的策略，首先查看自己的缓存，然后委托父类的父类去加载，一直到Bootstrap ClassLoader；
+当所有的父类加载器都没有加载的时候，再有当前的类加载器加载，并将其放入自己的缓存中，以便下次有加载请求的时候直接返回。</code></pre><p><strong><em>双亲委托机制的核心思想：自底向上检查类是否已经加载；自顶向下尝试加载类。</em></strong></p>
+<h6 id="ClassLoader隔离"><a href="#ClassLoader隔离" class="headerlink" title="ClassLoader隔离"></a>ClassLoader隔离</h6><pre><code>JVM对类的唯一标识是ClassLoader id + packageName + ClassName，所以一个运行程序中是有可能存在两个包名和类名完全一致的类。
+并且如果这两个类不是由同一个ClassLoader加载的话，是无法将一个类的实例强转为另外一个类的，这就是ClassLoader隔离。</code></pre><h6 id="类加载器的特点"><a href="#类加载器的特点" class="headerlink" title="类加载器的特点"></a>类加载器的特点</h6><pre><code>Java提供了动态加载特性。在运行时第一次引用到一个class的时候会对它进行装载(Loading)，链接(Linking)，初始化(Initialization),
+而不是在编译期进行的。(Hotspot JVM)</code></pre><ul>
+<li><p>层级结构： Java里的类加载器被组织成了具有父子关系的层级结构。Bootstrap类加载器是所有加载器的父亲</p>
+</li>
+<li><p>代理模式： 基于层级结构，类的代理可以在加载器之间进行代理。当加载器加载一个类时，它会首先检查它在父加载器中是否进行了加载，如果</p>
+<pre><code>如果上层加载器已经加载了该类，这个类会被直接使用，反之类加载器会请求加载这个类</code></pre></li>
+<li><p>可见性限制： 一个子加载器可以查找父加载器中的类，但是一个父加载器不能查找子加载器中的类</p>
+</li>
+<li><p>不允许卸载： 加载器可以加载一个类但是不可以卸载它。可以删除当前的类加载器，然后创建一个新的类加载器进行加载</p>
+<p>  加载 -&gt; 链接 -&gt; y验证 -&gt; 准备 -&gt; 解析 -&gt; 初始化</p>
+</li>
+</ul>
+<ol start="2">
+<li><p>执行引擎(Execution Engine) ： 将java字节码转换成可以直接被JVM执行的语言。</p>
+<p> <strong><em>通过类加载器加载的，被分配到JVM的运行时数据区的字节码会被执行引擎执行。</em></strong></p>
+<p> 执行引擎以指令为单位读取java字节码。每个字节码指令都是有一个一字节的操作码和被附加的操作数组成，执行引擎取得一个操作码，然后根据操作数来执行任务，完成后就继续执行下一条操作码。</p>
+<p> 字节码可以通过一下两种方式转换成机器语言：</p>
+</li>
+</ol>
+<ul>
+<li><p>解释器</p>
+<p>  解释器一条一条地读取字节码，解释并执行字节码指令。因为它是一条一条的解释和执行命令，所以它可以很快的解释字节码，但是执行起来会比较慢。</p>
+</li>
+<li><p>即时编译器</p>
+<p>  即时编译器被引入引来弥补解释器的缺点。执行引擎首先按照解释执行的方式来执行，然后在合适的时候即时编译器把整段字节码编译成<br>  本地代码。然后，执行引擎就没有必要再去解释执行了，它可以直接通过本地代码去执行它，执行本地代码比一条一条解释执行的速度快很多。编译后的代码可以执行的很快是因为本地代码是保存在缓存里的。</p>
+<p>  <strong><em>java字节码是解释执行的，但是没有直接在JVM宿主执行原生代码快。为了提高性能，Oracle Hotspot虚拟机会找到执行最频繁的字节码片段并把它们编译成原生机器码。编译出的原生机器码被存储在非堆内存的代码缓存中。</em></strong></p>
+<p>  Hotspot虚拟机将权衡两种时间的消耗：将字节码编译成本地代码需要的额外时间和解释执行字节码消耗更多的时间。</p>
+</li>
+</ul>
+</div><div class="post-copyright"><blockquote><p>Ursprünglicher Autor: Helianthus W</p><p>Ursprünglicher Link: <a href="http://yoursite.com/2019/06/13/jvm_01/">http://yoursite.com/2019/06/13/jvm_01/</a></p><p>Copyright-Erklärung: Bitte geben Sie die Quelle des Nachdrucks an.</p></blockquote></div><div class="tags"></div><div class="post-share"><div class="social-share"><span>Aktie:</span></div></div><div class="post-nav"><a href="/2019/06/13/jvm_02/" class="pre">JVM内存区</a><a href="/2019/06/13/java_web_program/" class="next"></a></div><div id="comments"></div></div></div></div><div class="layout-r"><div id="sidebar"><div class="search-pla"></div><div id="toc" class="widget"><div class="widget-title"><i class="fa fa-fei">Inhalte</i></div><ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#JVM-Java-Virtual-Machine"><span class="toc-text">JVM - Java Virtual Machine</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#双亲委托机制"><span class="toc-text">双亲委托机制</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#ClassLoader隔离"><span class="toc-text">ClassLoader隔离</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#类加载器的特点"><span class="toc-text">类加载器的特点</span></a></li></ol></li></ol></div><div class="widget"><div class="widget-title"><i class="fa fa-xie"> Letzte</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/杂记/">杂记</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/关于java的反射和内省/">java反射和内省</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/Spring Doc_01/">Spring Doc_01</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/RabbitMQ_02/">RabbitMQ 配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/RabbitMQ_01/">Rabbit MQ 使用记录(一)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/network_programming01/">Netty(一)</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/markdown_gfm/">markdown_gfm</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/markdown_01/">first blog</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/log_01/">log_01</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/jvm_02/">JVM内存区</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-biao"> Tags</i></div><div class="tagcloud"></div></div><div class="widget"><div class="widget-title"><i class="fa fa-archive"> Archiv</i></div><ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-you"> Blogroll</i></div><ul></ul><a href="http://www.example1.com/" title="site-name1" target="_blank">site-name1</a><ul></ul><a href="http://www.example2.com/" title="site-name2" target="_blank">site-name2</a><ul></ul><a href="http://www.example3.com/" title="site-name3" target="_blank">site-name3</a></div></div></div></div><a id="totop" href="#top"></a><div id="footer"><div class="footer-info"><p><a href="/baidusitemap.xml">Sitemap</a> |  <a href="/atom.xml">Abonnieren Sie diese Site</a> |  <a href="/about/">Kontaktieren Sie den Blogger</a></p><p>本站总访问量：<i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>次，本站总访客数:<i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>人</p><p><span> Copyright &copy;<a href="/." rel="nofollow">Helianthus W.</a></span><span> Theme by<a rel="nofollow" target="_blank" href="https://github.com/chaooo/hexo-theme-BlueLake"> BlueLake.</a></span><span> Count by<a href="http://busuanzi.ibruce.info/"> busuanzi.</a></span><span> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a></span></p></div></div></div><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><script type="text/javascript" src="/js/search.json.js?v=2.0.3"></script><script type="text/javascript" src="/js/toctotop.js?v=2.0.3" async></script><link rel="stylesheet" type="text/css" href="/share/css/share.css"><script type="text/javascript" src="/share/js/social-share.js" charset="utf-8"></script><script type="text/javascript" src="/share/js/qrcode.js" charset="utf-8"></script></body></html>
