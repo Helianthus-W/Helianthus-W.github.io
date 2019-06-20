@@ -1,0 +1,51 @@
+<!DOCTYPE html><html lang="null"><head><meta name="generator" content="Hexo 3.8.0"><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description"><title>JVM 对象 | Helianthus</title><link rel="stylesheet" type="text/css" href="//fonts.loli.net/css?family=Source+Code+Pro"><link rel="stylesheet" type="text/css" href="/css/style.css?v=2.0.3"><link rel="stylesheet" type="text/css" href="/css/highlight.css?v=2.0.3"><link rel="Shortcut Icon" href="/favicon.ico"><link rel="bookmark" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"><link rel="alternate" type="application/atom+xml" href="/atom.xml"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">JVM 对象</h1><a id="logo" href="/.">Helianthus</a><p class="description"></p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> Start</i></a><a href="/archives/"><i class="fa fa-archive"> Archiv</i></a><a href="/about/"><i class="fa fa-user"> Über</i></a><a href="/atom.xml"><i class="fa fa-rss"> RSS</i></a></div><div id="search-form"><div id="result-mask" class="hide"></div><label><input id="search-key" type="text" autocomplete="off" placeholder="Suche"></label><div id="result-wrap" class="hide"><div id="search-result"></div></div><div class="hide"><template id="search-tpl"><div class="item"><a href="/{path}" title="{title}"><div class="title">{title}</div><div class="time">{date}</div><div class="tags">{tags}</div></a></div></template></div></div></div><div id="layout" class="layout-g"><div class="layout-l"><div class="content_container"><div class="post"><h1 class="post-title">JVM 对象</h1><div class="post-meta"><a href="/2019/06/20/jvm_03/#comments" class="comment-count"></a><p><span class="date">Jun 20, 2019</span><span><i id="busuanzi_container_page_pv"><i id="busuanzi_value_page_pv"></i><i>Schlägt</i></i></span></p></div><div class="post-content"><blockquote>
+<p>对象的创建方式</p>
+</blockquote>
+<h6 id="java中提供了一下创建对象的方式："><a href="#java中提供了一下创建对象的方式：" class="headerlink" title="java中提供了一下创建对象的方式："></a>java中提供了一下创建对象的方式：</h6><ol>
+<li><p>使用new关键字</p>
+</li>
+<li><p>使用Class的newInstance方法</p>
+</li>
+<li><p>使用Constructor类的newInstance方法</p>
+</li>
+<li><p>使用clone方法 (需要实现Cloneable接口并实现clone方法)</p>
+</li>
+<li><p>使用反序列化 (需要实现Serializable接口)</p>
+<p> 以new关键字为例，JVM堆中对象创建实例如下：<br> 当JVM遇到一条new指令时，首先会检查这个指令参数能否在常量池中定位一个符号引用，然后检查这个符号引用的类字节码对象是否加载，解析和初始化了，如果没有则执行对应的加载过程。</p>
+</li>
+</ol>
+<ul>
+<li>类加载完成后，JVM会为新生对象分配内存区域，对象所需内存空间大小在类加载完成后就已经确定</li>
+<li>内存分配完成以后，JVM将分配到的内存空间都初始化为零值</li>
+<li>虚拟机对对象进行一系列的设置，如所属类的元信息，对象的哈希码，对象GC分带年龄，线程持有的锁，偏向线程的id等信息，这些信息存储在对象头中</li>
+</ul>
+<blockquote>
+<p>对象的布局</p>
+</blockquote>
+<pre><code>HotSpot虚拟机中，对象在内存中存储的布局可以分为三块区域：对象头(Header)、实例数据(Instance Data)和对齐填充(Padding)。</code></pre><h6 id="对象头"><a href="#对象头" class="headerlink" title="对象头"></a>对象头</h6><pre><code>HotSpot虚拟机中，对象头有两部分信息组成：运行时数据和类型指针。</code></pre><ol>
+<li><p>运行时数据</p>
+<p> 运行时数据用于存储对象自身运行时数据，如哈希码，GC分带年龄，线程持有的锁，偏向线程id等信息，这部分数据的长度在32位和64位的虚拟机中分别为32个bit和64个bit，官方称它为Mark Word。</p>
+</li>
+<li><p>类型指针</p>
+<p> 指向实例对象的类元数据的指针，虚拟机通过这个指针来确定这个对象是哪个类的实例。如果对象是一个java数组，那么在对象头中还必须有一块用与记录数组长度的数据。</p>
+</li>
+</ol>
+<h6 id="实例数据"><a href="#实例数据" class="headerlink" title="实例数据"></a>实例数据</h6><pre><code>实例数据部分是对象真正存储的有效信息，无论是从父类继承下来的还是该类自身的，都需要记录下来，而这部分的存储顺序受虚拟机的分配策略和定义的数据影响。
+
+默认分配策略是： 
+long/double  --&gt;  int/float  --&gt;  short/char  --&gt;  byte/boolean  --&gt;  reference
+
+如果设置了-XX:FieldsAllocationStyle=0(默认为1)，那么引用类型数据就会优先分配存储空间：
+reference  --&gt;  long/double  --&gt;  int/float  --&gt;  short/char  --&gt;  byte/boolean</code></pre><p><strong><em>分配策略总是按照字节大小由大到小的顺序排列，相同大小的放在一起</em></strong></p>
+<h6 id="对齐填充"><a href="#对齐填充" class="headerlink" title="对齐填充"></a>对齐填充</h6><pre><code>HotSpot虚拟机要求每个对象的起始地址必须是8字节的整数倍，也就是对象的大小必须是8字节的整数倍。而对象头部分正好是8字节的整数倍(32位为1倍，64位为两倍)，因此，当对象实例数据部分没有对齐的时候，就需要通过对齐填充来补全。</code></pre><blockquote>
+<p>对象的访问定位</p>
+</blockquote>
+<pre><code>java程序需要通过JVM栈上的引用访问堆中的具体对象。对象的访问方式取决于JVM虚拟机的实现。目前主流的访问方式有句柄和直接指针两种方式。</code></pre><ol>
+<li><p>句柄： 可以理解为指向指针的指针，维护者对象的指针。句柄不直接指向对象，而是指向对象的指针(句柄不发生变化，指向固定内存地址)，再由对象的指针指向对象的真实内存地址。</p>
+<p> java堆中划分出一块内存来作为句柄池，引用中存储对象的举兵地址，而句柄中包含了对象实例数据与对象类型数据各自的具体地址信息。<br> 引用中存储的是稳定的句柄地址，在对象被移动(垃圾收集时移动对象是非常普遍的行为)时只会改变句柄中的实例数据指针，而引用本身<br> 不需要修改。</p>
+</li>
+<li><p>指针： 指向对象，代表一个对象在内存中的起始地址。</p>
+<p> 使用直接指针引用，引用中存储的直接就是对象地址，那么java堆对象内部的布局中就必须考虑如何放置访问类型数据的相关信息。<br> 使用直接指针引用访问速度更快，节省了一次指针定位的时间开销。由于对象的访问在java中非常频繁，因此这类开销积少成多后也是非常可观的执行成本。</p>
+</li>
+</ol>
+</div><div class="post-copyright"><blockquote><p>Ursprünglicher Autor: Helianthus W</p><p>Ursprünglicher Link: <a href="http://yoursite.com/2019/06/20/jvm_03/">http://yoursite.com/2019/06/20/jvm_03/</a></p><p>Copyright-Erklärung: Bitte geben Sie die Quelle des Nachdrucks an.</p></blockquote></div><div class="tags"></div><div class="post-share"><div class="social-share"><span>Aktie:</span></div></div><div class="post-nav"><a href="/2019/06/20/jvm_04/" class="pre">JVM 垃圾回收算法</a><a href="/2019/06/13/杂记/" class="next">定时任务</a></div><div id="comments"></div></div></div></div><div class="layout-r"><div id="sidebar"><div class="search-pla"></div><div id="toc" class="widget"><div class="widget-title"><i class="fa fa-fei">Inhalte</i></div><ol class="toc"><li class="toc-item toc-level-6"><a class="toc-link" href="#java中提供了一下创建对象的方式："><span class="toc-text">java中提供了一下创建对象的方式：</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#对象头"><span class="toc-text">对象头</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#实例数据"><span class="toc-text">实例数据</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#对齐填充"><span class="toc-text">对齐填充</span></a></li></ol></div><div class="widget"><div class="widget-title"><i class="fa fa-xie"> Letzte</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2019/06/20/threadlocal_01/">ThreadLock</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/20/jwt_01/">JWT - Json Web Token</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/20/jvm_05/">JVM垃圾回收器</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/20/jvm_04/">JVM 垃圾回收算法</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/20/jvm_03/">JVM 对象</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/杂记/">定时任务</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/关于java的反射和内省/">java反射和内省</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/Spring Doc_01/">Spring Doc</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/RabbitMQ_02/">RabbitMQ 配置</a></li><li class="post-list-item"><a class="post-list-link" href="/2019/06/13/RabbitMQ_01/">Rabbit MQ 使用记录(一)</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-biao"> Tags</i></div><div class="tagcloud"></div></div><div class="widget"><div class="widget-title"><i class="fa fa-archive"> Archiv</i></div><ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/06/">June 2019</a></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/04/">April 2019</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-you"> Blogroll</i></div><ul></ul><a href="http://www.example1.com/" title="site-name1" target="_blank">site-name1</a><ul></ul><a href="http://www.example2.com/" title="site-name2" target="_blank">site-name2</a><ul></ul><a href="http://www.example3.com/" title="site-name3" target="_blank">site-name3</a></div></div></div></div><a id="totop" href="#top"></a><div id="footer"><div class="footer-info"><p><a href="/baidusitemap.xml">Sitemap</a> |  <a href="/atom.xml">Abonnieren Sie diese Site</a> |  <a href="/about/">Kontaktieren Sie den Blogger</a></p><p>本站总访问量：<i id="busuanzi_container_site_pv"><i id="busuanzi_value_site_pv"></i></i>次，本站总访客数:<i id="busuanzi_container_site_uv"><i id="busuanzi_value_site_uv"></i></i>人</p><p><span> Copyright &copy;<a href="/." rel="nofollow">Helianthus W.</a></span><span> Theme by<a rel="nofollow" target="_blank" href="https://github.com/chaooo/hexo-theme-BlueLake"> BlueLake.</a></span><span> Count by<a href="http://busuanzi.ibruce.info/"> busuanzi.</a></span><span> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a></span></p></div></div></div><script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script><script type="text/javascript" src="/js/search.json.js?v=2.0.3"></script><script type="text/javascript" src="/js/toctotop.js?v=2.0.3" async></script><link rel="stylesheet" type="text/css" href="/share/css/share.css"><script type="text/javascript" src="/share/js/social-share.js" charset="utf-8"></script><script type="text/javascript" src="/share/js/qrcode.js" charset="utf-8"></script></body></html>

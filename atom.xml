@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://yoursite.com/"/>
-  <updated>2019-06-13T09:35:36.365Z</updated>
+  <updated>2019-06-20T10:07:49.941Z</updated>
   <id>http://yoursite.com/</id>
   
   <author>
@@ -17,11 +17,127 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>ThreadLock</title>
+    <link href="http://yoursite.com/2019/06/20/threadlocal_01/"/>
+    <id>http://yoursite.com/2019/06/20/threadlocal_01/</id>
+    <published>2019-06-20T10:07:49.937Z</published>
+    <updated>2019-06-20T10:07:49.941Z</updated>
+    
+    <content type="html"><![CDATA[<pre><code>ThreadLocal是一个本地线程副本变量工具类。对于ThreadLocal，该类提供了线程局部变量。这些变量不同于他们的普通对应物，因为访问某个变量的每个线程都有自己的局部变量，他们独立于变量的初始副本。ThreadLocal实例通常是类中的private static字段，它们希望将状态与某一个线程相关联。</code></pre><ol><li>ThreadLocal提供了一种访问某个变量的特殊方式：访问到的变量属于当前线程，即保证每个变量不一样，而同一个线程在任何地方拿到的变量都是一致的</li><li>如果要使用ThreadLocal，通常定义为private static类型。</li></ol><p><strong><em>ThreadLocal使得各线程能够保持各自独立的一个对象，并不是通过ThreadLocal.set()实现的，而是通过每个线程中的new对象操作来创建对象的，每个线程创建一个，不是什么对象的拷贝或者是副本。</em></strong></p><pre><code>因此，如果ThreadLocal.set()存放的东西就是多个线程共享的同一个对象，那么多个线程的ThreadLocal.get()取得的还是这个共享对象本身，即还是会存在并发访问问题。</code></pre><blockquote><p>ThreadLocal如何工作</p></blockquote><ul><li>Thread类中有一个成员变量叫做ThreadLocalMap，它是一个Map，它的Key是ThreadLocal类；</li><li>每个线程拥有自己的声明为ThreadLocal类型的变量；</li><li>此变量声明周期是由该线程决定的，开始于第一次初始；</li><li>由ThreadLocal的工作原理决定：每个线程独自拥有一个变量，并非共享或者拷贝</li></ul>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;pre&gt;&lt;code&gt;ThreadLocal是一个本地线程副本变量工具类。
+
+对于ThreadLocal，该类提供了线程局部变量。这些变量不同于他们的普通对应物，因为访问某个变量的每个线程都有自己的局部变量，他们独立于变量的初始副本。ThreadLocal实例通常是类中的priv
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>JWT - Json Web Token</title>
+    <link href="http://yoursite.com/2019/06/20/jwt_01/"/>
+    <id>http://yoursite.com/2019/06/20/jwt_01/</id>
+    <published>2019-06-20T10:07:49.723Z</published>
+    <updated>2019-06-20T10:07:49.729Z</updated>
+    
+    <content type="html"><![CDATA[<h4 id="认证和授权"><a href="#认证和授权" class="headerlink" title="认证和授权"></a>认证和授权</h4><blockquote><p>认证： Authentication</p></blockquote><pre><code>认证是为了验证目标对象的身份，主要是解决&quot;你是谁&quot;</code></pre><blockquote><p>授权： Authorization</p></blockquote><pre><code>授权是为了赋予目标对象的可操作资源，主要是解决&quot;你能干什么&quot;对于一般的WEB应用来说，通常使用HTTP来进行访问，而HTTP是无状态的，因此客户端和服务端需要增加处理将无状态会话变为有状态会话。SESSION机制解决了HTTP的会话状态问题。客户端向服务端发起请求，服务端为客户端生成唯一的session_id，并将该id存储在服务端，然后将该id返回给客户端，客户端将其存储在COOKIE中。当客户端再次向服务端发起请求时会携带session_id一同发往服务端，服务端通过判断session_id是否存在来判断客户端是否处于登录状态。</code></pre><h4 id="什么是Token"><a href="#什么是Token" class="headerlink" title="什么是Token"></a>什么是Token</h4><pre><code>在WEB应用中，Token是指访问资源的凭据。</code></pre><h4 id="什么是OAuth-2-0"><a href="#什么是OAuth-2-0" class="headerlink" title="什么是OAuth 2.0"></a>什么是OAuth 2.0</h4><ol><li>客户端访问资源服务器(SP),SP告诉客户端需要进行认证，将用户重定向至认证服务(IdP)；</li><li>IdP询问客户端SP是否可以访问客户端信息，如果客户端同意，IdP向客户端返回access code；</li><li>客户端拿access code向Idp换取access token，并携带access token向SP请求资源，SP接受请求后使用该access token向IdP验证该用户身份，验证成功则返回资源给客户端</li></ol><p><strong><em>OAuth的本意是一个应用允许另一个应用在用户授权的情况下访问自己的数据，因此其设计本意更倾向于授权而非认证。</em></strong></p><h4 id="JWT"><a href="#JWT" class="headerlink" title="JWT"></a>JWT</h4><pre><code>JWT即Json Web Token，由三部分组成： header，payload，signature</code></pre><ul><li><p>header ： 用于描述元信息，例如产生signature的算法</p></li><li><p>payload ： 用于携带所需要传递的用户信息，既可以添加官方字段也可以添加自定义字段</p></li><li><p>signature ： 签名信息</p><p>  理论来说，JWT机制可以取代SESSION机制，客户端向认证服务获取一份JWT并保存在客户端本地，每次请求服务端资源时都携带该合法的JWT，<br>  后端使用JWT做一次合法性的验证，这样也达到了间接认证的目的。</p></li></ul><p><strong><em>JWT的目的不是为了隐藏或者保护数据，而是为了确保数据确实来自被授权的客户端创建的(不被篡改)。</em></strong></p><pre><code>当我们获取到JWT的时候，由于header和payload只是经过了base64的编码，其编码的目的是为了便于数据结构的传输。signature的创建过是对数据体的签名行为，其目的是为了保证数据的完整性，实际上并没有加密任何数据。</code></pre><h4 id="JWT在WEB应用中的缺陷"><a href="#JWT在WEB应用中的缺陷" class="headerlink" title="JWT在WEB应用中的缺陷"></a>JWT在WEB应用中的缺陷</h4><ol><li><p>无法满足注销场景</p><p> 传统的session + cookie的方案中客户端注销时，服务端清空session即可，因为状态保存在服务端。而JWT是无状态的，服务端通过计算来<br> 校验有效性，即使客户端删除JWT，但是该JWT还是在有效期内，只不过处于游离状态</p></li><li><p>无法满足修改密码场景</p><p> 在修改密码之后，而原有JWT在有效期内仍可继续访问资源服务，此时只有强制修改签名所使用的秘钥才可以进制原JWT的访问</p></li><li><p>无法满足token续签场景</p><p> 传统的COOKIE续签方案，SESSION的有限期是30分钟，30分钟内如果有访问，SESSION有效期会被刷新30分钟。在JWT的payload中也有一个exp<br> 过期时间参数，来代表一个JWT的时效性，但是payload本身是参与签名的，一旦过期时间被修改，整个JWT串就变了，因此JWT不支持续签。</p></li></ol><p><strong><em>在WEB应用中，绝大多数情况下，传统的cookie-session机制能够更好的处理认证和授权的问题。JWT适合做简单的RESTFUL API认证，颁发一个固定有效期的JWT，降低JWT暴露的风险，不应使用JWT做服务端的状态管理，这样才能使其发挥无状态的优势。</em></strong></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h4 id=&quot;认证和授权&quot;&gt;&lt;a href=&quot;#认证和授权&quot; class=&quot;headerlink&quot; title=&quot;认证和授权&quot;&gt;&lt;/a&gt;认证和授权&lt;/h4&gt;&lt;blockquote&gt;
+&lt;p&gt;认证： Authentication&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;pre&gt;&lt;co
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>JVM垃圾回收器</title>
+    <link href="http://yoursite.com/2019/06/20/jvm_05/"/>
+    <id>http://yoursite.com/2019/06/20/jvm_05/</id>
+    <published>2019-06-20T10:07:49.699Z</published>
+    <updated>2019-06-20T10:07:49.702Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote><p>垃圾回收器</p></blockquote>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;blockquote&gt;
+&lt;p&gt;垃圾回收器&lt;/p&gt;
+&lt;/blockquote&gt;
+
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>JVM 垃圾回收算法</title>
+    <link href="http://yoursite.com/2019/06/20/jvm_04/"/>
+    <id>http://yoursite.com/2019/06/20/jvm_04/</id>
+    <published>2019-06-20T10:07:49.693Z</published>
+    <updated>2019-06-20T10:07:49.696Z</updated>
+    
+    <content type="html"><![CDATA[<pre><code>在java内存区域中，PC计数器，虚拟机栈，本地方法栈三个区域随线程而生，随线程而亡；栈中的栈帧随着方法的进入和退出执行出栈和入栈操作，每个栈帧中分配多少内存基本在类结构确定下来的的时候就是已知的，因此这几个区域的内存分配和回收都具备确定性，因为方法结束或线程结束时，内存自然就跟随者回收了。而堆和方法区则不一样，一个接口中的多个实现类需要的内存可能不一样，一个方法中的多个分支需要的内存也可能不一样，只有在程序运行期间才能知道会创建哪些对象，因此这部分内存的分配和回收都是动态的，垃圾收集器所关注的是这部分内存。</code></pre><blockquote><p>对象生死的判定</p></blockquote><pre><code>垃圾回收器做的第一件事就是判断一个对象应该是生存或消亡。</code></pre><ol><li><p>引用计数算法</p><p> java堆中每个具体对象都有一个引用计数器。当一个对象被创建并初始化赋值后，该变量计数设置为1，每当有一个地方引用它时，计数器值就+1，当引用失效时，即一个对象的某个引用超过了生命周期(出作用域后)或者被设置为一个新值时，计数器值就-1。任何计数器值为0的对象可以被<br> 当做垃圾收集。当一个对象被垃圾收集时，它引用的任何对象计数-1。</p></li></ol><ul><li>优点： 引用计数收集器执行简单，判定效率高，交织在程序运行中，对程序不被长时间打断的实时环境比较有利。</li><li>缺点： 难以检测出对象的循环引用。同时，引用计数器增加了程序执行的开销。</li><li><strong>java没有选择这种算法进行垃圾回收。*</strong></li></ul><ol start="2"><li><p>可达性分析算法</p><p> 可达性分析算法也叫根搜索算法，通过一系列称为GC Roots的对象作为起点，然后向下搜索。搜索所走的路径称为引用链(Reference Chain)，当一个对象到GC Roots没有任何引用链相连时，即该对象不可达，也就表明该对象是不可用的。</p><p> 在java中，可作为GC Roots的对象有一下四种：</p></li><li><p>虚拟机栈(栈帧中的本地变量表)中引用的对象</p></li><li><p>本地方法栈中JNI(Native方法)引用的变量</p></li><li><p>方法区中类静态属性引用的变量</p></li><li><p>方法区中常量引用的变量</p></li></ol><blockquote><p> 对象引用分类</p></blockquote><ol><li>强引用 Strong Reference</li><li>软引用 Soft Reference</li><li>弱引用 Weak Reference</li><li>虚引用 Phantom Reference</li></ol><blockquote><p>finalize() 二次标记</p></blockquote><pre><code>一个对象是否应该在垃圾回收器的GC时回收，至少要经历两次标记过程。</code></pre><ul><li><p>第一次标记过程</p><p>  通过可达性分析算法分析对象是否与GC Roots可达。经过第一次标记，并且被筛选为不可达的对象会进行第二次标记。</p></li><li><p>第二次标记过程</p><p>  判断不可达对象是否有必要执行finalize方法。执行条件是当前对象的finalize方法被重写，并且还未被系统调用过。如果允许执行那么这个对象将会被放到一个叫F-Query的队列中，等待被执行。</p><p>  由于finalize由一个优先级比较低的Finalizer线程运行，所以该对象的finalize方法不一定被执行，即使被执行了，也不保证finalize方法一定会执行完。所以对象第二次小规模标记，即finalize方法中拯救自己，只需要重新和引用链上的任一对象建立关联即可。</p></li></ul><blockquote><p>垃圾回收算法</p></blockquote><ol><li><p>标记-清除算法</p><p> 标记-清除算法对根集合进行扫描，对存活的对象进行标记，标记完成后，在对整个空间内未被标记的对象扫描，进行回收</p><ol><li>标记阶段：通过根节点，标记所有从根节点开始的可达对象，未标记的对象就是未被引用的垃圾对象</li><li>清除阶段：清除所有未被标记的对象</li></ol><ul><li>优点： 实现简单，不需要对对象进行移动</li><li>缺点： 标记、清除过程效率低，产生大量不连续的内存碎片，提高了垃圾回收的频率</li></ul></li><li><p>复制算法</p><p> 解决了标记-清除算法中存在的效率问题，它将内存区域划分为相同的两个内存块。每次仅使用一半的空间，JVM生成的新对象放在另一半空间中，当一般空间用完时进行GC，把可达对象复制到另一半空间，然后把使用过的内存空间一次清理掉。</p><ul><li>优点： 按顺序分配内存即可，实现简单，运行高效，不用考虑内存碎片</li><li>缺点： 可用的内存大小缩小为原来的一半，对象存活率高时会频繁进行复制</li></ul></li><li><p>标记-整理算法</p><p>标记-整理算法采用和标记-清除算法一样的方式进行对象的标记，但后续不直接对可回收对象进行清理，而是将所有的存活对象往一端空闲空间移动，然后清理掉端边界以外的内存空间</p><ul><li>优点： 解决了标记-清理算法的内存碎片问题</li><li>缺点： 仍需要进行局部对象移动，一定程度上降低了效率</li></ul></li><li><p>分带收集算法</p><p> 分代收集就是根据对象的存活周期将内存划分为几块。一般分为年轻代，老年代和永久代。</p><ol><li><p>新生代</p><p> 绝大多数最新被创建的对象会被分配到这里，由于大部分对象在创建后会很快变得不可达，所以很多对象被创建在新生代，然后消失。对象从这个区域消失的过程称之为minor GC</p><p> 新生代中存在一个Eden区和两个Survivor区。新对象会首先被分配在Eden区(如果新对象过大，会直接分配在老年代中)。在GC中，Eden区的<br> 对象会被移动到Survivor区中，直到对象满足一定的年龄(定义为熬过GC的次数)，会被移动到老年代</p><p> 可以设置新生代和老年代的相对大小。</p><ul><li>优点： 新生代大小会随着整个堆大小动态扩展。参数-XX:NewRatio设置老年代和新生代的比例。例如-XX:NewRatio=8指定老年代/新生代为8/1。老年代占堆大小的7/8，新生代占1/8。</li></ul></li><li><p>老年代</p><p> 对象没有变得不可达，并且从新生代中存活下来，会被拷贝到这里。其所占用的空间要比新生代多。由于其相对较大的空间，发生在老年代上的GC要比新生代少的多。对象从老年代中消失的过程称之为major GC(或者full GC)。</p></li><li><p>永久代</p><p> 类的层级信息，方法数据和方法信息(如字节码，栈和变量大小)，运行时常量池(jdk7之后移除永久代)，已确定的符号引用和虚方法表等等<br> 它们几乎都是静态的并且很少被卸载和回收，在jdk8之前的HotSpot虚拟机中，类的这些永久数据存放在一个叫做永久代的区域。</p><p> 永久代是一段连续的内存空间，我们在JVM启动之前可以通过设置-XX:MaxPermSize的值来控制永久代的大小。但是jdk8以后取消了永久代，这些元数据被移到了一个与堆不相连的元空间(Metaspace)的本地内存区域。</p></li></ol></li></ol><p><strong><em>jdk8堆内存一般是划分为年轻代和老年代，不同的年代根据自身的特性采用不同的垃圾收集算法。对于新生代，每次GC时都有大量的对象死亡，只有少量的对象存活。考虑到复制成本，适合采用复制算法，因此有了From Survivor和To Survivor区域。对于老年代，因为对象存活率高，没有额外的内存空间对它进行担保，因此适合采用标记-清理算法和标记-整理算法进行回收。</em></strong></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;pre&gt;&lt;code&gt;在java内存区域中，PC计数器，虚拟机栈，本地方法栈三个区域随线程而生，随线程而亡；栈中的栈帧随着方法的进入和退出执行出栈和入栈操作，每个栈帧中分配多少内存基本在类结构确定下来的的时候就是已知的，因此这几个区域的内存分配和回收都具备确定性，因为方法结束或线
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>JVM 对象</title>
+    <link href="http://yoursite.com/2019/06/20/jvm_03/"/>
+    <id>http://yoursite.com/2019/06/20/jvm_03/</id>
+    <published>2019-06-20T10:07:49.683Z</published>
+    <updated>2019-06-20T10:07:49.686Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote><p>对象的创建方式</p></blockquote><h6 id="java中提供了一下创建对象的方式："><a href="#java中提供了一下创建对象的方式：" class="headerlink" title="java中提供了一下创建对象的方式："></a>java中提供了一下创建对象的方式：</h6><ol><li><p>使用new关键字</p></li><li><p>使用Class的newInstance方法</p></li><li><p>使用Constructor类的newInstance方法</p></li><li><p>使用clone方法 (需要实现Cloneable接口并实现clone方法)</p></li><li><p>使用反序列化 (需要实现Serializable接口)</p><p> 以new关键字为例，JVM堆中对象创建实例如下：<br> 当JVM遇到一条new指令时，首先会检查这个指令参数能否在常量池中定位一个符号引用，然后检查这个符号引用的类字节码对象是否加载，解析和初始化了，如果没有则执行对应的加载过程。</p></li></ol><ul><li>类加载完成后，JVM会为新生对象分配内存区域，对象所需内存空间大小在类加载完成后就已经确定</li><li>内存分配完成以后，JVM将分配到的内存空间都初始化为零值</li><li>虚拟机对对象进行一系列的设置，如所属类的元信息，对象的哈希码，对象GC分带年龄，线程持有的锁，偏向线程的id等信息，这些信息存储在对象头中</li></ul><blockquote><p>对象的布局</p></blockquote><pre><code>HotSpot虚拟机中，对象在内存中存储的布局可以分为三块区域：对象头(Header)、实例数据(Instance Data)和对齐填充(Padding)。</code></pre><h6 id="对象头"><a href="#对象头" class="headerlink" title="对象头"></a>对象头</h6><pre><code>HotSpot虚拟机中，对象头有两部分信息组成：运行时数据和类型指针。</code></pre><ol><li><p>运行时数据</p><p> 运行时数据用于存储对象自身运行时数据，如哈希码，GC分带年龄，线程持有的锁，偏向线程id等信息，这部分数据的长度在32位和64位的虚拟机中分别为32个bit和64个bit，官方称它为Mark Word。</p></li><li><p>类型指针</p><p> 指向实例对象的类元数据的指针，虚拟机通过这个指针来确定这个对象是哪个类的实例。如果对象是一个java数组，那么在对象头中还必须有一块用与记录数组长度的数据。</p></li></ol><h6 id="实例数据"><a href="#实例数据" class="headerlink" title="实例数据"></a>实例数据</h6><pre><code>实例数据部分是对象真正存储的有效信息，无论是从父类继承下来的还是该类自身的，都需要记录下来，而这部分的存储顺序受虚拟机的分配策略和定义的数据影响。默认分配策略是： long/double  --&gt;  int/float  --&gt;  short/char  --&gt;  byte/boolean  --&gt;  reference如果设置了-XX:FieldsAllocationStyle=0(默认为1)，那么引用类型数据就会优先分配存储空间：reference  --&gt;  long/double  --&gt;  int/float  --&gt;  short/char  --&gt;  byte/boolean</code></pre><p><strong><em>分配策略总是按照字节大小由大到小的顺序排列，相同大小的放在一起</em></strong></p><h6 id="对齐填充"><a href="#对齐填充" class="headerlink" title="对齐填充"></a>对齐填充</h6><pre><code>HotSpot虚拟机要求每个对象的起始地址必须是8字节的整数倍，也就是对象的大小必须是8字节的整数倍。而对象头部分正好是8字节的整数倍(32位为1倍，64位为两倍)，因此，当对象实例数据部分没有对齐的时候，就需要通过对齐填充来补全。</code></pre><blockquote><p>对象的访问定位</p></blockquote><pre><code>java程序需要通过JVM栈上的引用访问堆中的具体对象。对象的访问方式取决于JVM虚拟机的实现。目前主流的访问方式有句柄和直接指针两种方式。</code></pre><ol><li><p>句柄： 可以理解为指向指针的指针，维护者对象的指针。句柄不直接指向对象，而是指向对象的指针(句柄不发生变化，指向固定内存地址)，再由对象的指针指向对象的真实内存地址。</p><p> java堆中划分出一块内存来作为句柄池，引用中存储对象的举兵地址，而句柄中包含了对象实例数据与对象类型数据各自的具体地址信息。<br> 引用中存储的是稳定的句柄地址，在对象被移动(垃圾收集时移动对象是非常普遍的行为)时只会改变句柄中的实例数据指针，而引用本身<br> 不需要修改。</p></li><li><p>指针： 指向对象，代表一个对象在内存中的起始地址。</p><p> 使用直接指针引用，引用中存储的直接就是对象地址，那么java堆对象内部的布局中就必须考虑如何放置访问类型数据的相关信息。<br> 使用直接指针引用访问速度更快，节省了一次指针定位的时间开销。由于对象的访问在java中非常频繁，因此这类开销积少成多后也是非常可观的执行成本。</p></li></ol>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;blockquote&gt;
+&lt;p&gt;对象的创建方式&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h6 id=&quot;java中提供了一下创建对象的方式：&quot;&gt;&lt;a href=&quot;#java中提供了一下创建对象的方式：&quot; class=&quot;headerlink&quot; title=&quot;java中提供了一下创建对象
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
     <title>定时任务</title>
     <link href="http://yoursite.com/2019/06/13/%E6%9D%82%E8%AE%B0/"/>
     <id>http://yoursite.com/2019/06/13/杂记/</id>
     <published>2019-06-13T08:49:06.839Z</published>
-    <updated>2019-06-13T09:35:36.365Z</updated>
+    <updated>2019-06-20T10:07:49.995Z</updated>
     
     <content type="html"><![CDATA[<h4 id="定时任务的原理"><a href="#定时任务的原理" class="headerlink" title="定时任务的原理"></a>定时任务的原理</h4>]]></content>
     
@@ -42,7 +158,7 @@
     <link href="http://yoursite.com/2019/06/13/%E5%85%B3%E4%BA%8Ejava%E7%9A%84%E5%8F%8D%E5%B0%84%E5%92%8C%E5%86%85%E7%9C%81/"/>
     <id>http://yoursite.com/2019/06/13/关于java的反射和内省/</id>
     <published>2019-06-13T08:49:06.835Z</published>
-    <updated>2019-06-13T09:35:36.362Z</updated>
+    <updated>2019-06-20T10:07:49.986Z</updated>
     
     <content type="html"><![CDATA[<p>在java中所有的对象不是引用类型就是基本类型。不管什么类型的对象，java虚拟机都会为之实例化一个java.lang.Class的不可变实例，（Class类的实例就是运行的java应用里的classes和interfaces），这个实例会提供方法来检测对象的成员（members）和类型（type）信息。Class也有能力创建新的classes和objects。最重要的是Class是所有反射的API的入口。</p><h4 id="获取Class的方式"><a href="#获取Class的方式" class="headerlink" title="获取Class的方式"></a>获取Class的方式</h4><h5 id="object-getClass"><a href="#object-getClass" class="headerlink" title="object.getClass()"></a>object.getClass()</h5><pre><code>该方式只对引用类型有效</code></pre><h5 id="Class-class"><a href="#Class-class" class="headerlink" title="Class.class"></a>Class.class</h5><pre><code>基础类型获得相应的Class</code></pre><h5 id="Class-forName"><a href="#Class-forName" class="headerlink" title="Class.forName()"></a>Class.forName()</h5><pre><code>如果知道一个类的完整路径，可以通过该静态方法来获得相应的Class，该方式不能用于基础类型</code></pre><h5 id="Object-TYPE"><a href="#Object-TYPE" class="headerlink" title="Object.TYPE"></a>Object.TYPE</h5><pre><code>基本类型可以通过其包装类型的TYPE属性来获取Class</code></pre><h5 id="Class-getClass"><a href="#Class-getClass" class="headerlink" title="Class.getClass()"></a>Class.getClass()</h5>]]></content>
     
@@ -63,7 +179,7 @@
     <link href="http://yoursite.com/2019/06/13/Spring%20Doc_01/"/>
     <id>http://yoursite.com/2019/06/13/Spring Doc_01/</id>
     <published>2019-06-13T08:49:06.825Z</published>
-    <updated>2019-06-13T09:35:36.353Z</updated>
+    <updated>2019-06-20T10:07:49.933Z</updated>
     
     <content type="html"><![CDATA[<p>依赖解决过程</p><ol><li>创建ApplicationContext并初始化配置文件源信息中所声明的bean对象，配置源文件可以是XML，java代码或者是注解。</li><li>对于每个bean，它的依赖通过表单属性，构造参数，静态工厂方法来表达，在bean被实际创建的时候需要提供这些依赖。</li><li>每一个属性或者构造参数是一个设置真实值的定义，或者是容器中其他的bean的引用。</li><li>每一个属性或者构造参数的值都会被转为属性或者是构造参数的实际类型值，默认情况下，spring能够根据spring默认支持的格式化方式来进行转化。</li></ol><h4 id="SpringEL"><a href="#SpringEL" class="headerlink" title="SpringEL"></a>SpringEL</h4>]]></content>
     
@@ -87,7 +203,7 @@
     <link href="http://yoursite.com/2019/06/13/RabbitMQ_02/"/>
     <id>http://yoursite.com/2019/06/13/RabbitMQ_02/</id>
     <published>2019-06-13T08:49:06.821Z</published>
-    <updated>2019-06-13T09:35:36.349Z</updated>
+    <updated>2019-06-20T10:07:49.911Z</updated>
     
     <content type="html"><![CDATA[<p>RabbitMQ自带默认的构建配置。默认配置对于大部分环境来说是完全足够的。对于其他的一些场景来说，比如生产环境，通过类似插件的方式来配置<br>broker。</p><p>由于配置项的修改会影响系统(包括插件)的许多地方，因此配置文档会将会深入的介绍哪些配置是可以修改的<br>产品清单指出了在生产环境下可能会被修改的配置项概要。</p><blockquote><p>RabbitMQ提供了三种通用的服务端的配置方式</p></blockquote><h4 id="一-配置文件"><a href="#一-配置文件" class="headerlink" title="(一)配置文件"></a>(一)配置文件</h4><ol><li>TCP监听器和其他的网络相关配置</li><li>TLS</li><li>资源约束(预警)</li><li>后台认证和授权</li><li>消息的存储设置</li></ol><h4 id="二-环境变量"><a href="#二-环境变量" class="headerlink" title="(二)环境变量"></a>(二)环境变量</h4><p>节点名称的定义，文件和目录的位置，运行时的标识取自shell或者是环境配置文件中(Linux,MacOS,BSD系统下为rabbitmq-env.conf   windows下为rabbitmq-env-conf.bat)</p><h4 id="三-rabbitmqctl"><a href="#三-rabbitmqctl" class="headerlink" title="(三)rabbitmqctl"></a>(三)rabbitmqctl</h4><p>当使用内部的后台认证和授权时，rabbitmqctl是用于管理虚拟主机，用户和权限的工具</p><h4 id="四-rabbitmq-plugins"><a href="#四-rabbitmq-plugins" class="headerlink" title="(四)rabbitmq-plugins"></a>(四)rabbitmq-plugins</h4><p>rabbitmq-plugins是用于管理启用插件的工具</p><h4 id="五-运行时参数和策略"><a href="#五-运行时参数和策略" class="headerlink" title="(五)运行时参数和策略"></a>(五)运行时参数和策略</h4><p>定义了集群范围的配置，可以在运行时改变从而比较方便的配置像包含可选参数的队列组，交换机组等等。</p><h3 id="rabbitmq-conf中的核心服务变量配置"><a href="#rabbitmq-conf中的核心服务变量配置" class="headerlink" title="rabbitmq.conf中的核心服务变量配置"></a>rabbitmq.conf中的核心服务变量配置</h3><blockquote><p>listeners： 用于监听“plain” AMQP 0-9-1 和 AMQP 1.0的连接(不使用TLS)的主机名/端口</p></blockquote><blockquote><p>num_acceptors.tcp：Erlang进程能够处理TCP的连接数量</p></blockquote><blockquote><p>handshake_timeout：AMQP 0-9-1协议的握手最大时间(单位：毫秒)</p></blockquote><blockquote><p>listeners.ssl：用于监听AMQP 0-9-1 and AMQP 1.0的TLS连接</p></blockquote><blockquote><p>num_acceptors.ssl：Erlang进程能够处理的客户端的TLS连接数</p></blockquote><blockquote><p>ssl_options： TLS的配置项</p></blockquote><blockquote><p>ssl_handshake_timeout：TLS的握手超时时间(单位：毫秒)</p></blockquote><blockquote><p>vm_memory_high_watermark：触发流量控制的内存临界值，取决于操作系统的内存容量的绝对值或相对值</p></blockquote><blockquote><p>vm_memory_calculation_strategy：内存使用的报告策略。</p></blockquote><ol><li>allocated：使用Erlang内存分配器统计</li><li>rss：使用操作系统的RSS内存报告。</li><li>legacy：使用legacy内存报告。这种统计方式是相当不准确的</li><li>erlang：和legacy相似</li></ol><blockquote><p>vm_memory_high_watermark_paging_ratio：</p></blockquote><blockquote><p>total_memory_available_override_value</p></blockquote><blockquote><p>disk_free_limit：</p></blockquote><blockquote><p>log.file.level：</p></blockquote><blockquote><p>channel_max：</p></blockquote><blockquote><p>channel_operation_timeout：</p></blockquote><blockquote><p>heartbeat：</p></blockquote><blockquote><p>default_vhost：<br>default_user<br>default_pass<br>default_user_tags<br>default_permissions<br>loopback_users<br>cluster_formation.classic_config.nodes<br>collect_statistics</p></blockquote><blockquote><p>collect_statistics_interval</p></blockquote><h4 id="可选参数"><a href="#可选参数" class="headerlink" title="可选参数"></a>可选参数</h4><pre><code>可选的队列参数，“x-arguments”，这些属性名称被定义在AMQP 0-9-1协议中。可以再client端队列声明时提供的map集合。在插件和特定的broker的特性中所使用。例如：</code></pre><ol><li>Message and Queue TTL 消息和队列的存活时间</li><li>Queue length limit 队列长度限制</li><li>Mirroring settings 镜像配置</li><li>Max number of priorities 优先级的最大数量</li><li>Consumer priorities 消费者的优先级  等等</li></ol><blockquote><p>可选参数可通过两种方式提供</p></blockquote><ol><li>为队列组使用策略(推荐)</li><li>在客户端声明一个队列时的基础信息中配置</li></ol><blockquote><p>临时队列，队列自动删除有三种方式：</p></blockquote><ol><li>Exclusive queues 独占队列</li><li>TTLs 存活时间</li><li>Auto-delete 自动删除</li></ol><p>如果一个队列没有任何消费者，例如，所有的消费行为均为“basic.get”方法，它是不会被自动删除的，这种情况下，需要使用独占队列或者设置队列存活时间。</p><blockquote><p>消息状态，队列消息可能处于一下两种状态</p></blockquote><ol><li>准备投递</li><li>已经被投递但是还没被消费者确认</li></ol><blockquote><p>决定队列的长度，队列长度的设定有很多中方法：</p></blockquote><ol><li>在AMQP 0-9-1协议中，使用queue.declare方法的一个属性设置来响应。属性的名字叫做“message_count”，如何接入取决于客户端库的差异</li></ol><p>队列的长度被定义为处于投递状态的消息数量</p><blockquote><p>RabbitMQ 支持一下几个协议:</p></blockquote><ol><li><p>AMQP 0-9-1 with extensions<br> AMQP 0-9-1 提供了一种在单一TCP连接上进行多路传输的连接方式。也就是说应用可以在单一TCP连接上开启多个叫做“通道”(channel)的轻量级连接。<br> AMPQ 0-9-1客户端在连接建立后开启一个或多个通道然后在通道上执行协议操作。<br> 在一条连接上可以同时建立的通道数量是由客户端和服务端在建立连接时协商决定的。客户端配置的通道最大数量不能超过服务端配置的通道最大数量。<br> AMQP 0-9-1 支持不同的认证机制。比较常用的是为应用提供一对X509认证的证书和PKI。</p></li><li><p>AMQP 1.0<br> AMQP 1.0 提供了一种在单一TCP连接上进行多路传输的连接方式。也就是说应用可以在单一TCP连接上开启多个叫做“会话”(session)的轻量级连接。应用可以建立一个或多个连接来发布或消费消息。</p></li><li><p>MQTT 3.1.1<br> MQTT 3.1也遵循下面所提的连接建立流程，MQTT支持可选身份认证，使用时RabbitMQ会提供预置的凭证。</p></li><li><p>STOMP 1.0 through 1.2<br> STOMP也遵循下面所提的连接建立流程。</p></li></ol><p>操作系统对单一进程能够同时开启的TCP连接数量有一个限定范围。这个限定的连接数量在开发环境下或者是QA环境下是足够的，但在生产环境必须要调高此限制来应对大量客户端的并发连接。</p><blockquote><p>Connection LifeCycle</p></blockquote><pre><code>为了客户端可以和RabbitMQ进行交互首先需要建立一条连接，这个过程包含以下几步：</code></pre><ol><li><p>应用对使用明确的连接后台的客户端库进行配置</p></li><li><p>客户端库把配置的主机地址解析为一个或多个ip地址</p></li><li><p>客户端库与目标主机地址和端口建立一个TCP连接</p></li><li><p>在服务端接收TPC连接后，执行具体的协议协商程序</p></li><li><p>接下来服务端会对客户端进行验证</p></li><li><p>现在客户端可以进行操作了，服务端会对每一个操作进行认证检查。</p><p> 这个流程不会因为协议不同而发生变化，但是会有一点细微的不同。</p></li></ol><blockquote><p>Connection Leaks</p></blockquote><pre><code>连接泄露是一种在应用重复的开启连接但是没有关闭连接或者是只关闭了其中的一部分的情况。</code></pre><blockquote><p>High Connection Churn</p></blockquote><pre><code>一个系统的新建连接的速率一直很高并且关闭连接的速率也一直很高时就说明该系统具有高连接丢失。这意味着该系统使用的是短连接。虽然对于系统的某些工作负载来说这是一个较为正常的状态，但还是尽可能的推荐使用长连接。</code></pre><blockquote><p>RabbitMQ 中的 Connection和Channel</p></blockquote><pre><code>无论是生产者还是消费者，都需要和RabbitMQ的broker建立连接，这个连接就是一条TCP连接，也就是Connection一旦TCP连接建立起来，客户端就可以创建一个AMQP信道(Channel)，每个信道都会被指派一个唯一的id。信道是建立在Connection之上的虚拟连接，RabbitMQ处理的每条AMQP指令都是通过信道完成的。原本使用Connection就能完成信道的工作，为什么要引入信道呢？一个应用程序中有很多线程需要从RabbitMQ中消费消息，或者生产消息，那必然需要建立很多个Connection，也就是多个TCP连接，而对于操作系统来说，建立和销毁TCP连接是非常昂贵的开销，如果遇到使用高峰，性能瓶颈也随之显现。RabbitMQ采用了TCP连接复用，每个线程把持一个信道，所以信道复用了Connection的TCP连接，同时RabbitMQ可以确保每个线程的私密性，就像独立的连接一样，当每个信道的连接不是很大时，复用单一的Connection可以在产生性能瓶颈的情况下有效的节省TCP连接资源，但是信道本身流量很大时，这个时候多个信道复用一个Connection就会产生性能瓶颈，进而使整体的流量被限制了，此时就需要开辟多个Connection，将这些信道均摊到这些Connection中。</code></pre>]]></content>
     
@@ -109,7 +225,7 @@
     <link href="http://yoursite.com/2019/06/13/RabbitMQ_01/"/>
     <id>http://yoursite.com/2019/06/13/RabbitMQ_01/</id>
     <published>2019-06-13T08:49:06.817Z</published>
-    <updated>2019-06-13T09:35:36.344Z</updated>
+    <updated>2019-06-20T10:07:49.862Z</updated>
     
     <content type="html"><![CDATA[<h3 id="Rabbit-MQ-使用之broker"><a href="#Rabbit-MQ-使用之broker" class="headerlink" title="Rabbit MQ 使用之broker"></a>Rabbit MQ 使用之broker</h3><p>CachingConnectionFactory默认的缓存模式是CHANNEL，RabbitAdmin实现会在同一个ApplicationContext中自动延迟声明Queues，Exchanges和Bindings。只要Connection打开了与Broker的连接，这些组件就会被声明。</p><blockquote><p>延迟消息交换器</p></blockquote><blockquote><p>事物</p></blockquote><blockquote><p>消息监听器</p></blockquote><pre><code>acknowledge:应答模式</code></pre><ol><li><p>NONE:不发送应答</p></li><li><p>MANUAL:手动应答</p></li><li><p>AUTO:自动应答</p><p> concurrentConsumers:每个监听器上初始启动的并发消费者的数量</p><p> defaultRequeueRejected:因监听器抛出异常而遭受拒绝的消息是否需要重新入列。默认为true</p><p> missingQueuesFatal:</p></li></ol><blockquote><p>RabbitMQ相关概念：</p></blockquote><p>ConnectionFactory: 应用程序与Rabbit之间建立连接的管理器<br>Channel：消息推送使用的通道<br>Exchange：用于接收、分配消息<br>Queue：用于存储生产者的消息<br>RoutingKey：用于把生产者的数据分配到交换机上<br>BindingKey：用于把交换机的消息绑定到队列上</p>]]></content>
     
@@ -130,7 +246,7 @@
     <link href="http://yoursite.com/2019/06/13/network_programming01/"/>
     <id>http://yoursite.com/2019/06/13/network_programming01/</id>
     <published>2019-06-13T08:49:06.812Z</published>
-    <updated>2019-06-13T09:35:36.340Z</updated>
+    <updated>2019-06-20T10:07:49.843Z</updated>
     
     <content type="html"><![CDATA[<blockquote><h4 id="Bootstrap是什么"><a href="#Bootstrap是什么" class="headerlink" title="Bootstrap是什么"></a>Bootstrap是什么</h4></blockquote><p>ServerBootstrap 和 Bootstrap</p><blockquote><h4 id="数据的“入站”和“出站”"><a href="#数据的“入站”和“出站”" class="headerlink" title="数据的“入站”和“出站”"></a>数据的“入站”和“出站”</h4></blockquote><p>入站：数据从远程主机到用户应用程序称为“入站”<br>出站：数据从用户应用程序到远程主机称为“出站”</p><blockquote><h4 id="数据的“编码”和“解码”"><a href="#数据的“编码”和“解码”" class="headerlink" title="数据的“编码”和“解码”"></a>数据的“编码”和“解码”</h4></blockquote><p>在计算机的世界里从来都是只有0和1，若要使得计算机能够认识语言文字，就需要建立一种从从文字到0,1的映射。<br>从文字到0,1的映射称为“编码”<br>从0,1到文字的映射称为“解码”</p><blockquote><h5 id="计算机是如何显示文字的"><a href="#计算机是如何显示文字的" class="headerlink" title="计算机是如何显示文字的"></a>计算机是如何显示文字的</h5></blockquote><p>我们知道，计算式是以二进制的形式来保存和处理数据的，也就是说，不管我们使用键盘进行输入，还是让计算机去读取某一个文本文件，计算机得到的原始内容是一些二进制序列，当需要对这些二进制序列进行显示时，计算机会按照某种“翻译机制”(也就是编码方式)，取得这些二进制序列所表示的每个文字的“轮廓描述”(点阵或矢量图)，知道了轮廓，计算机便可以将二进制序列所表示的实际的文字形状显示在屏幕上了。</p><blockquote><h5 id="字符集"><a href="#字符集" class="headerlink" title="字符集"></a>字符集</h5></blockquote><p>将一些自然语言中的字符组成一个集合，并对集合中的每个字符制定规范化的编码方式，这个字符的集合和规范方式的编码方式就组成了一个字符集</p><blockquote><h5 id="字符编码"><a href="#字符编码" class="headerlink" title="字符编码"></a>字符编码</h5></blockquote><p>字符编码即建立一套自然语言中的“字符”跟计算机能够存储处理的二进制数的映射规则，即在一个字符集内，用一个特定的二进制数表示一个<br>唯一的“字符”。</p><blockquote><h5 id="为什么需要编码"><a href="#为什么需要编码" class="headerlink" title="为什么需要编码"></a>为什么需要编码</h5></blockquote><p>当数据不利于计算机处理、存储的时候，就需要对它进行编码。</p><ol><li>对字符进行编码是因为自然语言中的字符不利于计算机处理和存储</li><li>对图片信息、视频信息、声音信息进行压缩、优化，将其格式化，是为了保证媒体资源质量的同时，尽量的节省网络带宽和本地存储的空间</li><li>对URL进行编码是为了避免URL解析时发生歧义，简化解码方式</li></ol>]]></content>
     
@@ -153,7 +269,7 @@
     <link href="http://yoursite.com/2019/06/13/markdown_gfm/"/>
     <id>http://yoursite.com/2019/06/13/markdown_gfm/</id>
     <published>2019-06-13T08:49:06.810Z</published>
-    <updated>2019-06-13T09:35:36.336Z</updated>
+    <updated>2019-06-20T10:07:49.814Z</updated>
     
     <summary type="html">
     
@@ -167,7 +283,7 @@
     <link href="http://yoursite.com/2019/06/13/markdown_01/"/>
     <id>http://yoursite.com/2019/06/13/markdown_01/</id>
     <published>2019-06-13T08:49:06.807Z</published>
-    <updated>2019-06-13T09:35:36.333Z</updated>
+    <updated>2019-06-20T10:07:49.802Z</updated>
     
     <content type="html"><![CDATA[<h2 id="第一篇Markdown"><a href="#第一篇Markdown" class="headerlink" title="第一篇Markdown"></a>第一篇Markdown</h2><h3 id="markdown语法"><a href="#markdown语法" class="headerlink" title="markdown语法"></a>markdown语法</h3><h4 id="引用用法："><a href="#引用用法：" class="headerlink" title="引用用法："></a>引用用法：</h4><blockquote><p>采菊东篱下，悠然见南山</p></blockquote><h4 id="中划线用法"><a href="#中划线用法" class="headerlink" title="中划线用法"></a>中划线用法</h4><p><del>尽力而位这个成语中存在错别字，应该是尽力而为</del></p><h4 id="斜体用法"><a href="#斜体用法" class="headerlink" title="斜体用法"></a>斜体用法</h4><p>我正在学习JavaScript用法<br>我正在学习<em>JavaScript</em>用法</p><h4 id="粗体用法"><a href="#粗体用法" class="headerlink" title="粗体用法"></a>粗体用法</h4><p>正常：我喜欢在Mac上写作，因为Mac很优美<br>加粗：我喜欢在<strong>Mac</strong>上写作，因为<strong>Mac</strong>很优美</p><h4 id="斜粗体使用"><a href="#斜粗体使用" class="headerlink" title="斜粗体使用"></a>斜粗体使用</h4><p>正常：我喜欢在<strong><em>Mac</em></strong>上写作，因为<strong><em>Mac</em></strong>很优美</p><h4 id="链接"><a href="#链接" class="headerlink" title="链接"></a>链接</h4><p><a href="https://helianthus-w.github.io" target="_blank" rel="noopener">helianthus-w</a></p><h4 id="图片-可使用本地地址和远程地址"><a href="#图片-可使用本地地址和远程地址" class="headerlink" title="图片(可使用本地地址和远程地址)"></a>图片(可使用本地地址和远程地址)</h4><p><img src="C:%5CUsers%5C111%5CPictures%5Cdownload_main_page_-_big_photo.jpg" alt="头像"></p><h4 id="无序列表"><a href="#无序列表" class="headerlink" title="无序列表"></a>无序列表</h4><p>在列表前加上一个*、+、-即可，文字与符号之间最好空一格</p><ul><li>首先，我们应该</li><li>其次，我们应当</li></ul><ul><li>白日依山尽</li><li>黄河入海流</li><li>欲穷千里目</li><li>更上一层楼</li></ul><h4 id="有序列表"><a href="#有序列表" class="headerlink" title="有序列表"></a>有序列表</h4><p>添加有序列表的方法是，在文字前添加数字加英文句点，文字与符号之间最好空一格</p><ol><li>《平凡的世界》</li><li>《活着》</li></ol><h4 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h4><p>给文字添加背景 只需要在文字的两边添加反引号`即可</p><p>我很喜欢苹果的新编程语言<code>swift</code></p><h4 id="表格"><a href="#表格" class="headerlink" title="表格"></a>表格</h4><p>:—- 左对齐 :—-: 居中  —-:右对齐</p><table><thead><tr><th align="left">姓名</th><th align="left">张三</th><th align="center">李四</th><th align="right">王五</th></tr></thead><tbody><tr><td align="left">性别</td><td align="left">男</td><td align="center">男</td><td align="right">男</td></tr><tr><td align="left">身高</td><td align="left">170</td><td align="center">180</td><td align="right">190</td></tr><tr><td align="left">地址</td><td align="left">北京</td><td align="center">上海</td><td align="right">深圳</td></tr></tbody></table><h4 id="代码块"><a href="#代码块" class="headerlink" title="代码块"></a>代码块</h4><p>在需要添加代码的上下两行添加三个反引号<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">```java</span><br><span class="line">public class App &#123;</span><br><span class="line">    public static void main(String[] args) &#123;</span><br><span class="line">        System.out.println(&quot;hello world!&quot;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>]]></content>
     
@@ -188,7 +304,7 @@
     <link href="http://yoursite.com/2019/06/13/log_01/"/>
     <id>http://yoursite.com/2019/06/13/log_01/</id>
     <published>2019-06-13T08:49:06.803Z</published>
-    <updated>2019-06-13T09:35:36.327Z</updated>
+    <updated>2019-06-20T10:07:49.777Z</updated>
     
     <content type="html"><![CDATA[<p>日志等级：<br>ERROR：系统产生的错误信息，往往会严重影响系统的稳定性<br>WARNING: 警告信息，这类信息需要特别注意但是不会影响系统运行<br>INFO: 系统内部状态，可以用来分析一些工作<br>DEBUG: 调试信息，这类日志一般会在开发的时候用的较多<br>TRACE: 流程追踪信息，这类信息一般用来追踪一个操作流</p><p>ERROR &gt; WARNING &gt; INFO &gt; DEBUG&gt; TRACE</p><p>对于后端系统日志而言，应用一直在后台没日没夜的运行，我们不能在系统出现问题的时候再去添加新的埋点（打印日志的地方），所以需要仔细的考量需要埋点的地方，其次后端系统由于业务场景不同，往往产生大量的日志，这就需要对日志进行分类一边后续的分析。由于后端系统会长时间运行，所以日志会不断的产生，为了存储大量的日志信息，还需要合适的策略来对日志进行文件存储。</p><p>从业务角度，可以把日志分为以下几类：<br>1.业务日志 比如用户的操作日志，主要用来监控业务逻辑的执行情况<br>2.错误日志 系统错误信息<br>3.摘要日志 系统操作上下文的摘要信息<br>4.统计日志 可以汇总的统计的信息</p><p>ELK</p>]]></content>
     
@@ -209,9 +325,9 @@
     <link href="http://yoursite.com/2019/06/13/jvm_02/"/>
     <id>http://yoursite.com/2019/06/13/jvm_02/</id>
     <published>2019-06-13T08:49:06.798Z</published>
-    <updated>2019-06-13T09:35:36.324Z</updated>
+    <updated>2019-06-20T10:07:49.675Z</updated>
     
-    <content type="html"><![CDATA[<h4 id="Java内存区域"><a href="#Java内存区域" class="headerlink" title="Java内存区域"></a>Java内存区域</h4><pre><code>JVM在执行Java程序的过程中，会把所管理的内存划分为若干不同的数据区域。这些内存区域各有各的用途，以及创建时间和销毁时间。有的区域随着虚拟机进程的启动而存在，有的区域伴随着用户线程的启动和结束而创建和销毁。JVM内存区也成为Java运行时数据区域，其中包括：程序计数器，虚拟机栈，本地方法栈，堆，静态方法区，静态常量池等。</code></pre><blockquote><p>PC计数器(Program Counter Register)</p></blockquote><pre><code>程序计数器是一块较小的内存空间，它的作用可以看做是当前线程所执行的字节码行号指示器。每个线程都有一个自己的PC计数器，它是私有的，声明周期和线程相同，随着JVM启动而生，JVM关闭而死。当线程执行java方法时，记录其正在执行的虚拟机字节码指令地址，当线程执行Native方法时，计数器记录为空。PC计数器是唯一在JVM规范中没有规定任何OutOfMemoryError的区域。</code></pre><blockquote><p>虚拟机栈</p></blockquote><pre><code>虚拟机栈是线程私有的内存空间，声明周期和线程相同。线程执行期间，每个方法执行时都会创建一个栈帧，用于存储局部变量表，操作数栈，动态链接，方法出口等信息。</code></pre><h6 id="局部变量表"><a href="#局部变量表" class="headerlink" title="局部变量表"></a>局部变量表</h6><pre><code>局部变量表是一组变量值的存储空间，用于存储方法参数和局部变量。在class文件的方法表的code属性和max_locals指定了该方法所需局部变量表的最大容量。局部变量表的最小单位是变量槽。规定大小为32位。对于64位的long和double变量而言，虚拟机会为其分配两个连续的Slot空间。局部变量表在编译期间分配内存空间，可以存放编译期的各种变量类型：</code></pre><ul><li>基本数据类型： boolean，byte，char，short，int，float，long，double</li><li>对象引用类型： reference，指向对象起始地址的引用指针</li><li>返回地址类型： returnAddress，返回地址的类型</li></ul><h6 id="操作数栈"><a href="#操作数栈" class="headerlink" title="操作数栈"></a>操作数栈</h6><pre><code>操作数栈是一个后入先出栈。在class文件的code属性的max_stacks指定了执行过程中最大的栈深度。操作数栈也是一个以32字长为单位的数组。虚拟机在操作数栈中可存储的数据类型：int，long，float，double。reference和returnType(对于byte、short、char类型的值在压入到操作数栈之前也会被转为int)。和局部变量表所不同的是，它不是通过索引来访问，而是通过标准的栈操作--压栈和出栈来访问的。虚拟机把操作数栈作为它的工作区，大多数指令都要从这里弹出数据，执行运算，然后把结果压回操作数栈。</code></pre><h6 id="动态链接"><a href="#动态链接" class="headerlink" title="动态链接"></a>动态链接</h6><pre><code>每个栈帧都包含一个指向运行时常量池中所属的方法的引用，持有这个引用是为了支持方法调用过程中的动态链接。class文件中的常量池中存有大量的符号引用，字节码中的方法调用指令就以常量池中指向方法的符号引用为参数。符号的引用可通过一下方式生成：</code></pre><ul><li>静态解析： 一部分会在类加载阶段或第一次使用的时候转换为直接引用(如final，static域等)，称为静态解析</li><li>动态解析： 另一部分将在每一次的运行期间转换为直接引用，称为动态链接</li></ul><h6 id="方法返回地址"><a href="#方法返回地址" class="headerlink" title="方法返回地址"></a>方法返回地址</h6><pre><code>一个方法开始执行后，只有两种方法可以退出当前方法：</code></pre><ul><li><p>正常返回： 当执行遇到返回指令时，会将返回值传递给上层的方法调用者，这种退出的方式称为正常完成出口，一般来说，调用者的PC计数器可</p><pre><code>以作为返回地址</code></pre></li><li><p>异常返回： 当执行遇到异常，并且当前方法体内没有得到处理，就会导致方法退出，此时是没有返回值的，称为异常完成出口。返回地址要通过</p><pre><code>异常处理器来确定。</code></pre><p>  当一个方法返回时，可能依次进行一下操作：</p></li><li><p>恢复上层方法的局部变量表和操作数栈</p></li><li><p>把返回值压入调用者栈帧的操作数栈</p></li><li><p>将PC计数器的数值指向下一条的方法指令位置</p></li></ul><p><strong><em>每一个方法从调用到执行结束的过程，就是对应着一个栈帧在虚拟机栈中的入栈和出栈的过程。</em></strong></p><blockquote><p>本地方法栈</p></blockquote><pre><code>本地方法栈和java虚拟机栈发挥的作用非常相似，主要区别在于java虚拟机栈执行的是啊java方法服务，而本地方法栈执行Native方法服务。</code></pre><blockquote><p>堆</p></blockquote><pre><code>java堆是所有线程共享的最大的一块内存区域，在虚拟机启动时创建。此内存区域的唯一目的就是存放对象实例，几乎所有的对象实例都在这里分配内存。在java中，堆被分成两个不同的区域，新生代(Young Generation)和老年代(Old Generation)。其中新生代又被划分为三个区域，一个Eden区和两个Survivor区(From Survivor和To Survivor)。</code></pre><p><strong><em>新的对象分配是首先放在年轻代的Eden区，Survivor区作为Eden区和老年代的缓冲，在Survivor区的对象经历若干次收集仍然存活的就会被转移到老年代中</em></strong></p><blockquote><p>方法区</p></blockquote><pre><code>方法区和java堆一样，为多个线程共享，它用于存储类信息、常量、静态常量和即时编译后的代码等数据。</code></pre><blockquote><p>运行时常量池</p></blockquote><pre><code>运行时常量池是方法区的一部分，class文件中除了有类的版本，字段，方法和接口等描述信息外，还有一类信息是常量池，用于存储编译期间生成的各种字面量和符号引用。</code></pre><blockquote><p>直接内存</p></blockquote><pre><code>直接内存不属于虚拟机运行时数据区的一部分，也不是java虚拟机规范中定义的内存区域。Java NIO允许java程序直接访问直接内存，通常直接内存的速度会优于java堆内存。因此，对于读写频繁、性能要求高的场景，可以考虑使用直接内存。</code></pre>]]></content>
+    <content type="html"><![CDATA[<h4 id="Java内存区域"><a href="#Java内存区域" class="headerlink" title="Java内存区域"></a>Java内存区域</h4><pre><code>JVM在执行Java程序的过程中，会把所管理的内存划分为若干不同的数据区域。这些内存区域各有各的用途，以及创建时间和销毁时间。有的区域随着虚拟机进程的启动而存在，有的区域伴随着用户线程的启动和结束而创建和销毁。JVM内存区也成为Java运行时数据区域，其中包括：程序计数器，虚拟机栈，本地方法栈，堆，静态方法区，静态常量池等。</code></pre><blockquote><p>PC计数器(Program Counter Register)</p></blockquote><pre><code>程序计数器是一块较小的内存空间，它的作用可以看做是当前线程所执行的字节码行号指示器。每个线程都有一个自己的PC计数器，它是私有的，声明周期和线程相同，随着JVM启动而生，JVM关闭而死。当线程执行java方法时，记录其正在执行的虚拟机字节码指令地址，当线程执行Native方法时，计数器记录为空。PC计数器是唯一在JVM规范中没有规定任何OutOfMemoryError的区域。</code></pre><blockquote><p>虚拟机栈</p></blockquote><pre><code>虚拟机栈是线程私有的内存空间，声明周期和线程相同。线程执行期间，每个方法执行时都会创建一个栈帧，用于存储局部变量表，操作数栈，动态链接，方法出口等信息。</code></pre><h6 id="局部变量表"><a href="#局部变量表" class="headerlink" title="局部变量表"></a>局部变量表</h6><pre><code>局部变量表是一组变量值的存储空间，用于存储方法参数和局部变量。在class文件的方法表的code属性和max_locals指定了该方法所需局部变量表的最大容量。局部变量表的最小单位是变量槽。规定大小为32位。对于64位的long和double变量而言，虚拟机会为其分配两个连续的Slot空间。局部变量表在编译期间分配内存空间，可以存放编译期的各种变量类型：</code></pre><ul><li>基本数据类型： boolean，byte，char，short，int，float，long，double</li><li>对象引用类型： reference，指向对象起始地址的引用指针</li><li>返回地址类型： returnAddress，返回地址的类型</li></ul><h6 id="操作数栈"><a href="#操作数栈" class="headerlink" title="操作数栈"></a>操作数栈</h6><pre><code>操作数栈是一个后入先出栈。在class文件的code属性的max_stacks指定了执行过程中最大的栈深度。操作数栈也是一个以32字长为单位的数组。虚拟机在操作数栈中可存储的数据类型：int，long，float，double。reference和returnType(对于byte、short、char类型的值在压入到操作数栈之前也会被转为int)。和局部变量表所不同的是，它不是通过索引来访问，而是通过标准的栈操作--压栈和出栈来访问的。虚拟机把操作数栈作为它的工作区，大多数指令都要从这里弹出数据，执行运算，然后把结果压回操作数栈。</code></pre><h6 id="动态链接"><a href="#动态链接" class="headerlink" title="动态链接"></a>动态链接</h6><pre><code>每个栈帧都包含一个指向运行时常量池中所属的方法的引用，持有这个引用是为了支持方法调用过程中的动态链接。class文件中的常量池中存有大量的符号引用，字节码中的方法调用指令就以常量池中指向方法的符号引用为参数。符号的引用可通过一下方式生成：</code></pre><ul><li>静态解析： 一部分会在类加载阶段或第一次使用的时候转换为直接引用(如final，static域等)，称为静态解析</li><li>动态解析： 另一部分将在每一次的运行期间转换为直接引用，称为动态链接</li></ul><h6 id="方法返回地址"><a href="#方法返回地址" class="headerlink" title="方法返回地址"></a>方法返回地址</h6><pre><code>一个方法开始执行后，只有两种方法可以退出当前方法：</code></pre><ul><li><p>正常返回： 当执行遇到返回指令时，会将返回值传递给上层的方法调用者，这种退出的方式称为正常完成出口，一般来说，调用者的PC计数器可</p><pre><code>以作为返回地址</code></pre></li><li><p>异常返回： 当执行遇到异常，并且当前方法体内没有得到处理，就会导致方法退出，此时是没有返回值的，称为异常完成出口。返回地址要通过</p><pre><code>异常处理器来确定。</code></pre><p>  当一个方法返回时，可能依次进行一下操作：</p></li><li><p>恢复上层方法的局部变量表和操作数栈</p></li><li><p>把返回值压入调用者栈帧的操作数栈</p></li><li><p>将PC计数器的数值指向下一条的方法指令位置</p></li></ul><p><strong><em>每一个方法从调用到执行结束的过程，就是对应着一个栈帧在虚拟机栈中的入栈和出栈的过程。</em></strong></p><blockquote><p>本地方法栈</p></blockquote><pre><code>本地方法栈和java虚拟机栈发挥的作用非常相似，主要区别在于java虚拟机栈执行的是java方法服务，而本地方法栈执行Native方法服务。</code></pre><blockquote><p>堆</p></blockquote><pre><code>java堆是所有线程共享的最大的一块内存区域，在虚拟机启动时创建。此内存区域的唯一目的就是存放对象实例，几乎所有的对象实例都在这里分配内存。在java中，堆被分成两个不同的区域，新生代(Young Generation)和老年代(Old Generation)。其中新生代又被划分为三个区域，一个Eden区和两个Survivor区(From Survivor和To Survivor)。</code></pre><p><strong><em>新的对象分配是首先放在年轻代的Eden区，Survivor区作为Eden区和老年代的缓冲，在Survivor区的对象经历若干次收集仍然存活的就会被转移到老年代中</em></strong></p><blockquote><p>方法区</p></blockquote><pre><code>方法区和java堆一样，为多个线程共享，它用于存储类信息、常量、静态常量和即时编译后的代码等数据。</code></pre><blockquote><p>运行时常量池</p></blockquote><pre><code>运行时常量池是方法区的一部分，class文件中除了有类的版本，字段，方法和接口等描述信息外，还有一类信息是常量池，用于存储编译期间生成的各种字面量和符号引用。</code></pre><blockquote><p>直接内存</p></blockquote><pre><code>直接内存不属于虚拟机运行时数据区的一部分，也不是java虚拟机规范中定义的内存区域。Java NIO允许java程序直接访问直接内存，通常直接内存的速度会优于java堆内存。因此，对于读写频繁、性能要求高的场景，可以考虑使用直接内存。</code></pre>]]></content>
     
     <summary type="html">
     
@@ -230,7 +346,7 @@
     <link href="http://yoursite.com/2019/06/13/jvm_01/"/>
     <id>http://yoursite.com/2019/06/13/jvm_01/</id>
     <published>2019-06-13T08:49:06.794Z</published>
-    <updated>2019-06-13T09:35:36.319Z</updated>
+    <updated>2019-06-20T10:07:49.657Z</updated>
     
     <content type="html"><![CDATA[<h4 id="JVM-Java-Virtual-Machine"><a href="#JVM-Java-Virtual-Machine" class="headerlink" title="JVM - Java Virtual Machine"></a>JVM - Java Virtual Machine</h4><pre><code>JVM是一种用于计算设备的规范，是一个虚构的计算机软件实现，一个运行byte code字节码程序的容器。JVM是基于栈结构的。JVM使用Java字节码的方式，作为Java用户语言和机器语言之间的中间语言。实现了一个通用的、机器无关的执行平台。</code></pre><blockquote><p>JVM特点</p></blockquote><ol><li>符号引用<br> 除了基本类型以外的数据（类和接口）都是通过符号来引用的，而不是通过显示地使用内存地址来引用</li><li>垃圾收集<br> 一个类的实例是由用户程序创建和垃圾回收自动销毁</li><li>网络字节顺序<br> Java class文件用网络字节码顺序来进行存储，保证了小端的Intel x86架构和大端的RISC系列的架构之间的无关性</li></ol><blockquote><p>JVM声明周期</p></blockquote><ul><li>启动： 任何一个拥有main方法的class都可以作为JVM实例运行的起点</li><li>运行： main函数为起点，程序中的其他线程均有它启动，包括damon守护线程和non-daemon普通线程。daemon是JVM自己使用的线程比如GC线程，<pre><code>main方法的初始线程是non-daemon。</code></pre></li><li>消亡： 所有线程终止时，JVM实例结束生命</li></ul><blockquote><p>JVM组成架构</p></blockquote><ol><li><p>类加载器(Class Loader) : 负责加载程序中的类型(类和接口)，并赋予唯一的名字予以标识</p><p> JDK默认提供了三种Class Loader：</p><ul><li><p>Bootstrap ClassLoader -&gt; 负责$JAVA_HOME/jre/lib, $JAVA_HOME/jre/classes以及-Xbootclasspath参数指定路径下的类</p></li><li><p>Extension ClassLoader -&gt; 负载$JAVA_HOME/jre/lib/ext下的所有classes目录以及java.ext.dirs系统变量指定路径下的类</p></li><li><p>Application ClassLoader -&gt; classpath指定的路径下的类或jar文档，它是java程序的默认类加载器</p><p>三种类加载器的关系为：<br>Bootstrap ClassLoader是在JVM启动后初始化的；<br>Bootstrap ClassLoader负责加载Extension ClassLoader，并且将Extension ClassLoader的父加载器设置为Bootstrap ClassLoader；<br>Bootstrap ClassLoader加载完Extension ClassLoader之后，就会加载Application ClassLoader，并将Application ClassLoader的父加载器设置为Extension ClassLoader</p></li></ul></li></ol><h6 id="双亲委托机制"><a href="#双亲委托机制" class="headerlink" title="双亲委托机制"></a>双亲委托机制</h6><pre><code>双亲委托： 当前ClassLoader首先从自己已经加载的类中查询此类是否已经加载，如果已经加载则直接返回原来已加载的类；当前ClassLoader的缓存中没有找到被加载的类的时候，委托父加载器去加载，父加载器采用同样的策略，首先查看自己的缓存，然后委托父类的父类去加载，一直到Bootstrap ClassLoader；当所有的父类加载器都没有加载的时候，再有当前的类加载器加载，并将其放入自己的缓存中，以便下次有加载请求的时候直接返回。</code></pre><p><strong><em>双亲委托机制的核心思想：自底向上检查类是否已经加载；自顶向下尝试加载类。</em></strong></p><h6 id="ClassLoader隔离"><a href="#ClassLoader隔离" class="headerlink" title="ClassLoader隔离"></a>ClassLoader隔离</h6><pre><code>JVM对类的唯一标识是ClassLoader id + packageName + ClassName，所以一个运行程序中是有可能存在两个包名和类名完全一致的类。并且如果这两个类不是由同一个ClassLoader加载的话，是无法将一个类的实例强转为另外一个类的，这就是ClassLoader隔离。</code></pre><h6 id="类加载器的特点"><a href="#类加载器的特点" class="headerlink" title="类加载器的特点"></a>类加载器的特点</h6><pre><code>Java提供了动态加载特性。在运行时第一次引用到一个class的时候会对它进行装载(Loading)，链接(Linking)，初始化(Initialization),而不是在编译期进行的。(Hotspot JVM)</code></pre><ul><li><p>层级结构： Java里的类加载器被组织成了具有父子关系的层级结构。Bootstrap类加载器是所有加载器的父亲</p></li><li><p>代理模式： 基于层级结构，类的代理可以在加载器之间进行代理。当加载器加载一个类时，它会首先检查它在父加载器中是否进行了加载，如果</p><pre><code>如果上层加载器已经加载了该类，这个类会被直接使用，反之类加载器会请求加载这个类</code></pre></li><li><p>可见性限制： 一个子加载器可以查找父加载器中的类，但是一个父加载器不能查找子加载器中的类</p></li><li><p>不允许卸载： 加载器可以加载一个类但是不可以卸载它。可以删除当前的类加载器，然后创建一个新的类加载器进行加载</p><p>  加载 -&gt; 链接 -&gt; y验证 -&gt; 准备 -&gt; 解析 -&gt; 初始化</p></li></ul><ol start="2"><li><p>执行引擎(Execution Engine) ： 将java字节码转换成可以直接被JVM执行的语言。</p><p> <strong><em>通过类加载器加载的，被分配到JVM的运行时数据区的字节码会被执行引擎执行。</em></strong></p><p> 执行引擎以指令为单位读取java字节码。每个字节码指令都是有一个一字节的操作码和被附加的操作数组成，执行引擎取得一个操作码，然后根据操作数来执行任务，完成后就继续执行下一条操作码。</p><p> 字节码可以通过一下两种方式转换成机器语言：</p></li></ol><ul><li><p>解释器</p><p>  解释器一条一条地读取字节码，解释并执行字节码指令。因为它是一条一条的解释和执行命令，所以它可以很快的解释字节码，但是执行起来会比较慢。</p></li><li><p>即时编译器</p><p>  即时编译器被引入引来弥补解释器的缺点。执行引擎首先按照解释执行的方式来执行，然后在合适的时候即时编译器把整段字节码编译成<br>  本地代码。然后，执行引擎就没有必要再去解释执行了，它可以直接通过本地代码去执行它，执行本地代码比一条一条解释执行的速度快很多。编译后的代码可以执行的很快是因为本地代码是保存在缓存里的。</p><p>  <strong><em>java字节码是解释执行的，但是没有直接在JVM宿主执行原生代码快。为了提高性能，Oracle Hotspot虚拟机会找到执行最频繁的字节码片段并把它们编译成原生机器码。编译出的原生机器码被存储在非堆内存的代码缓存中。</em></strong></p><p>  Hotspot虚拟机将权衡两种时间的消耗：将字节码编译成本地代码需要的额外时间和解释执行字节码消耗更多的时间。</p></li></ul>]]></content>
     
@@ -251,7 +367,7 @@
     <link href="http://yoursite.com/2019/06/13/java_web_program/"/>
     <id>http://yoursite.com/2019/06/13/java_web_program/</id>
     <published>2019-06-13T08:49:06.792Z</published>
-    <updated>2019-06-13T09:35:36.314Z</updated>
+    <updated>2019-06-20T10:07:49.646Z</updated>
     
     <summary type="html">
     
@@ -265,7 +381,7 @@
     <link href="http://yoursite.com/2019/06/13/java_sychronized/"/>
     <id>http://yoursite.com/2019/06/13/java_sychronized/</id>
     <published>2019-06-13T08:49:06.788Z</published>
-    <updated>2019-06-13T09:35:36.311Z</updated>
+    <updated>2019-06-20T10:07:49.639Z</updated>
     
     <content type="html"><![CDATA[<h4 id="Java内置锁"><a href="#Java内置锁" class="headerlink" title="Java内置锁"></a>Java内置锁</h4><pre><code>每个java对象都可以用作一个实现同步的锁，这些锁称为内置锁。线程进入同步代码块或方法的时候会自动获得该锁，在退出同步代码块或方法时会释放该锁。获得内置锁的唯一途径就是进入这个锁的保护的同步代码块或方法。java内置锁是一个互斥锁，这就意味着最多只有一个线程能够获得该锁，当线程1尝试去获得线程2持有的内置锁时，线程1必须等待或者是阻塞，如果线程2不释放这个锁，那么线程1将永远等待下去。</code></pre><h4 id="对象锁和类锁"><a href="#对象锁和类锁" class="headerlink" title="对象锁和类锁"></a>对象锁和类锁</h4><pre><code>java的对象锁和类锁在锁的概念上基本和内置锁是一致的，但是两个锁实际是有很大区别的，对象锁作用于对象的实例方法或者一个对象实例上，类锁是用于类的静态方法或者一个类的class对象上。类的对象实例有很多个，但是每个类只有一个class对象，所以不同对象实例的对象锁是互不干扰的，每个类只有一个类锁。类锁只是一个概念性的东西，并不是真实存在的，只用用于理解区分锁定实例方法和静态方法的区别。</code></pre><blockquote><p>对象锁 sychronized修饰实例方法 | sychronized修饰代码块</p></blockquote><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SychronizedCase</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        sychronized(<span class="keyword">this</span>) &#123;</span><br><span class="line">            <span class="keyword">int</span> i = <span class="number">5</span>;</span><br><span class="line">            <span class="keyword">while</span>(i-- &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                System.out.println(Thread.currentThread().getName()+ <span class="string">":"</span> + i);</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    Thread.sleep(<span class="number">1000L</span>);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">test2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">5</span>;</span><br><span class="line">        <span class="keyword">while</span>(i-- &lt; <span class="number">0</span>) &#123;</span><br><span class="line">            System.out.println(Thread.currentThread().getName() + <span class="string">":"</span> + i);</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                    Thread.sleep(<span class="number">1000L</span>);</span><br><span class="line">                &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SychronizedCase sychronizedCase = <span class="keyword">new</span> SychronizedCase();</span><br><span class="line">        <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                sychronizedCase.test1();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).start();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                sychronizedCase.test2();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).start();</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><pre><code>在test1()中使用了同步代码块的方式进行同步，传入的对象实例是this，在test2()中使用同步关键字修饰实例方法，在两个同步代码所需要获得的对象锁都是同一个对象锁进行了同步的方法和没有进行同步的方法是互不影响的，一个线程进入了同步方法，得到了对象锁，其他线程还是可以访问那些没有同步的方法。对象的内置锁和对象的状态之间是没有内在的关联的，虽有大多数类都将内置锁用作一种有效的加锁机制，但对象的域并不一定通过内置锁来保护。当获取到与对象关联的内置锁时，并不能阻止其他线程访问该对象，当某个线程获得对象的锁之后，只能阻止其他线程获得同一个锁。之所以每个对象都有一个内置锁，是为了免去显式的创建锁对象。因此，sychronized只是一个内置锁的加锁机制，当某个方法加上sychronized关键字后，就表明要获得该内置锁才能执行，并不能阻止其他线程访问不需要获得该内置锁的方法。</code></pre><blockquote><p>类锁 sychronized修饰静态方法 | sychronized修饰代码块、</p></blockquote><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SychronizedCase</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">test1</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">synchronized</span>(SychronizedCase.class) &#123;</span><br><span class="line">            <span class="keyword">int</span> i = <span class="number">5</span>;</span><br><span class="line">            <span class="keyword">while</span>(i-- &gt; <span class="number">0</span>) &#123;</span><br><span class="line">                System.out.println(Thread.currentThread().getName() + <span class="string">":"</span> + i);</span><br><span class="line">                <span class="keyword">try</span> &#123;</span><br><span class="line">                    Thread.sleep(<span class="number">1000L</span>);</span><br><span class="line">                &#125; <span class="keyword">catch</span>(Exception e) &#123;</span><br><span class="line">                    e.printStackTrace();</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">synchronized</span> <span class="keyword">void</span> <span class="title">test2</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> i = <span class="number">5</span>;</span><br><span class="line">        <span class="keyword">while</span>(i-- &gt; <span class="number">0</span>) &#123;</span><br><span class="line">            System.out.println(Thread.currentThread().getName() + <span class="string">":"</span> + i);</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                Thread.sleep(<span class="number">1000L</span>);</span><br><span class="line">            &#125; <span class="keyword">catch</span>(Exception e)&#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        SychronizedCase sychronizedCase = <span class="keyword">new</span> SychronizedCase();</span><br><span class="line">        <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                sychronizedCase.test1();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).start();</span><br><span class="line"></span><br><span class="line">        <span class="keyword">new</span> Thread(<span class="keyword">new</span> Runnable() &#123;</span><br><span class="line">            <span class="function"><span class="keyword">public</span>  <span class="keyword">void</span> <span class="title">run</span><span class="params">()</span> </span>&#123;</span><br><span class="line">                sychronizedCase.test2();   </span><br><span class="line">            &#125;</span><br><span class="line">        &#125;).start();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><pre><code>使用类锁修饰方法和代码块的效果和对象锁是一样的，类锁只是抽象出来的一个概念，是为了区分静态方法的特点，静态方法是所有对象实例公用的，所以对应着修饰的静态方法的锁也是唯一的。使用sychronized同时修饰静态方法和实例方法，类锁和对象锁是两个不一样的锁，控制着不同的区域，它们是互不干扰的。同样，线程获得对象锁的同时，也可以获得类锁，即同时获得两个锁，这是允许的。</code></pre><blockquote><p>sychronized的缺陷</p></blockquote><pre><code>当某个线程进入同步方法获得对象锁，那么其他线程访问这个对象的同步方法时，必须等待或者阻塞，这个高并发系统是致命的，很容易导致系统的崩溃。如果某个线程在同步方法里发生了死循环，那么它就永远不会释放这个对象锁，那么其他线程就要永远等待。</code></pre>]]></content>
     
@@ -286,7 +402,7 @@
     <link href="http://yoursite.com/2019/06/13/java_semaphore/"/>
     <id>http://yoursite.com/2019/06/13/java_semaphore/</id>
     <published>2019-06-13T08:49:06.783Z</published>
-    <updated>2019-06-13T09:35:36.307Z</updated>
+    <updated>2019-06-20T10:07:49.615Z</updated>
     
     <content type="html"><![CDATA[<p>Semaohore类是一个计数信号量，必须由获取它的线程释放，通常用于限制可以访问某些资源(物理或逻辑的)线程数目。</p>]]></content>
     
@@ -308,7 +424,7 @@
     <link href="http://yoursite.com/2019/06/13/java_note_01/"/>
     <id>http://yoursite.com/2019/06/13/java_note_01/</id>
     <published>2019-06-13T08:49:06.779Z</published>
-    <updated>2019-06-13T09:35:36.303Z</updated>
+    <updated>2019-06-20T10:07:49.598Z</updated>
     
     <content type="html"><![CDATA[<h4 id="方法的加载"><a href="#方法的加载" class="headerlink" title="方法的加载"></a>方法的加载</h4><pre><code>从内存上分析，当应用程序完成初始化后，CLR(Common Language Runtime公共语言运行库)和java虚拟机一样也是一个运行时环境，它负责资源管理(内存分配和垃圾收集等)，并保证应用和底层操作系统之间的必要的分离。CLR在进程的可用空间给每个进程分配一个地址空间，这个地址空间就是托管堆。托管堆又分为多个区域，其中最重要的是垃圾回收堆（GC Heap）和加载堆（Loader Heap），GC Heap用于存储对象实例，受GC管理。Loader Heap通过MethodTable表存储的最重要的信息就是元数据相关信息，例如基类型，静态字段，实现接口和所有方法等等。Loader Heap不受GC控制，其生命周期为应用创建到应用销毁。也就是说一个类一旦被加载，这个类的静态和非静态方法都会存储到Loader Heap的MethodTable表中，它们都是第一次加载就会常驻内存中。</code></pre><h4 id="静态方法和非静态方法的区别"><a href="#静态方法和非静态方法的区别" class="headerlink" title="静态方法和非静态方法的区别"></a>静态方法和非静态方法的区别</h4><pre><code>静态方法和非静态方法的区别在于创建对象的时候，静态方法就一份，而非静态方法每new一个新对象就会把这个实例相关的信息在GC Heap上复制一份，同时把new出来的新对象放在堆栈上。堆栈指针指向的地址就是刚刚复制到GC Heap的内存地址。所以在方法的调用速度上，静态方法要稍微快一点，因为非静态方法要实例化，分配内存。</code></pre><h4 id="静态方法和单例模式的区别"><a href="#静态方法和单例模式的区别" class="headerlink" title="静态方法和单例模式的区别"></a>静态方法和单例模式的区别</h4><pre><code>静态方法是基于类的，而单例则是基于对象的。如果解决模式是基于对象的就是用单例，否则使用静态方法。比如需要继承类，实现接口，需要延迟初始化，需要重写父类等要使用单例；其次，静态方法是面向过程的，单例是面向对象的；第三，静态属性变量不会被GC清楚，静态方法中产生的对象会随着静态方法执行完毕而被释放，单例的对象不会被清除</code></pre>]]></content>
     
@@ -317,114 +433,6 @@
       
       
         &lt;h4 id=&quot;方法的加载&quot;&gt;&lt;a href=&quot;#方法的加载&quot; class=&quot;headerlink&quot; title=&quot;方法的加载&quot;&gt;&lt;/a&gt;方法的加载&lt;/h4&gt;&lt;pre&gt;&lt;code&gt;从内存上分析，当应用程序完成初始化后，CLR(Common Language Runtime公共语言
-      
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>java中断机制</title>
-    <link href="http://yoursite.com/2019/06/13/java_interrupt/"/>
-    <id>http://yoursite.com/2019/06/13/java_interrupt/</id>
-    <published>2019-06-13T08:49:06.775Z</published>
-    <updated>2019-06-13T09:35:36.298Z</updated>
-    
-    <content type="html"><![CDATA[<h4 id="java中线程的状态定义"><a href="#java中线程的状态定义" class="headerlink" title="java中线程的状态定义"></a>java中线程的状态定义</h4><ol><li><p>NEW ： 线程未启动的状态</p></li><li><p>RUNNABLE ： 线程可运行的状态<br> 处于运行状态的线程在java虚拟机中执行但是它可能会等待来自操作系统的其他资源，比如处理器。</p></li><li><p>BLOCKED ： 线程阻塞等待获取监控锁的状态<br> 处于阻塞状态的线程正在等待监控锁用于进入同步代码块/同步方法或者是被调用后重入同步代码块/同步方法</p></li><li><p>WAITING ： 线程等待的状态<br> 调用如下方法时线程会进入等待状态：</p><ul><li>Object.wait</li><li>Thread.join</li><li>LockSupport.part<br>处于等待状态的线程是在等待另一个线程的特定的操作。例如，一个线程调用了一个对象的Object.wait就在等待另一个线程调用该对象的<br>Object.notify或者是Object.notifyAll。一个线程调用了Thread.join在等待一个特定线程的终止。</li></ul></li><li><p>TIMED_WAITING ： 带有特定等待时间的线程的等待状态<br> 通过调用带有一个合法的等待时间的如下方法会使线程进入特定等待时间的等待状态：</p><ul><li>Thread.sleep</li><li>Object.wait</li><li>Thread.join</li><li>LockSupport.parkNanos</li><li>LockSupport.parkUntil</li></ul></li><li><p>TERMINATED ： 线程的终止状态<br> 线程执行结束的状态</p><p> 在java中没有提供一种安全直接的方法来停止某个线程，但是java提供了中断机制。</p></li></ol><h4 id="java中断原理"><a href="#java中断原理" class="headerlink" title="java中断原理"></a>java中断原理</h4><pre><code>java中断机制是一种协作机制，也就是说通过中断并不能直接终止另一个线程，而需要被中断的线程自己处理。(被中断的线程并不会立马退出运行)在java中断模型中，每个线程对象里都有一个boolean类型的标识代表着是否有中断请求。例如，在Thread1想要中断Thread2，只需要在Thread1中将Thread2的中断标识符设置为true，然后Thread2可以选择在合适的时候处理该中断请求，甚至可以不理会该请求，就像线程没有被中断一样。</code></pre><h4 id="中断的处理"><a href="#中断的处理" class="headerlink" title="中断的处理"></a>中断的处理</h4><blockquote><p>处理时机</p></blockquote><pre><code>作为一种协作机制，java不会强求被中断线程一定要在某个点进行处理。实际上，被中断线程只需要在合适的时候处理即可，如果没有合适的时间点，甚至可以不处理，这时候在任务处理层面，就跟没有调用中断方法一样。“合适的时候”与线程正在处理的业务逻辑紧密相关。例如，每次迭代的时候，进入一个可能阻塞且无法中断的方法之前等，但是多半不会出现在某一临界区更新另一个对象状态的时候，因为这可能会导致对象处于不一致的状态。处理时机决定着程序的效率与中断响应的灵敏性。频繁的检查中断状态可能会使程序执行效率下降，相反，检查的较少可能会使中断请求得不到及时响应。如果发出中断请求后，被中断的请求执行一段时间不会给系统带来灾难，那么就可以将中断处理放到方便检查中断，同时又能从一定程度上保证响应灵敏程度的地方。当程序的性能指标比较关键时，可能需要建立一个测试模型来分析最佳的中断检测点，以平衡性能和响应灵敏性。</code></pre><blockquote><p>处理方式</p></blockquote><ol><li><p>中断状态的管理</p><p> 一般来说，当可能阻塞的方法声明中有抛出InterruptedException则暗示该方法是可中断的，如果程序捕获到这些可中断的阻塞方法抛出的<br> InterruptedException或检测到中断后，一般有以下两个通用处理原则：</p><ol><li>如果遇到的是可中断的阻塞方法抛出InterruptedException，可以继续向方法调用栈的上层抛出该异常，如果是检测到中断，则可清除中断状态并抛出InterruptedException，是当前方法也成为一个可中断的方法。</li><li>若有时候不方便在方法上抛出InterruptedException，比如要实现的某个接口中的方法签名上没有throws InterruptedException，这时候就可以捕获可中断方法的InterruptedException并通过Thread.currentThread.interrupt()来重新设置中断状态。如果是检测并清除了中断状态，也是如此。</li></ol></li><li><p>中断响应</p><p> 程序中发现中断的响应应视情况而定。有些程序可能一检测到中断就立马将线程终止，有些可能是退出当前执行的任务，继续执行下一个任务。作为一种协作机制，这要与中断方协商好，当调用interrupt会发生些什么事情是事先知道的，如做一些事务回滚操作，一些清理工作，一些补偿操作等，如果不确定调用某个线程的interrupt后该线程会作出什么样的响应，那么就不应当中断该线程。</p></li></ol><h4 id="中断的使用"><a href="#中断的使用" class="headerlink" title="中断的使用"></a>中断的使用</h4><pre><code>通常中断的使用场景有以下几个：</code></pre><ol><li>点击桌面应用中的取消按钮时</li><li>某个操作超过了一定的执行时间限制需要终止时 </li><li>多个线程多相同的事情，只要一个线程成功其他线程都可以取消时</li><li>一组线程中的一个或者多个出现错误导致整组都无法继续时</li><li>当一个应用或服务需要停止时</li></ol>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h4 id=&quot;java中线程的状态定义&quot;&gt;&lt;a href=&quot;#java中线程的状态定义&quot; class=&quot;headerlink&quot; title=&quot;java中线程的状态定义&quot;&gt;&lt;/a&gt;java中线程的状态定义&lt;/h4&gt;&lt;ol&gt;
-&lt;li&gt;&lt;p&gt;NEW ： 线程未启动的状态&lt;/p&gt;
-&lt;/
-      
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>first blog</title>
-    <link href="http://yoursite.com/2019/06/13/first_blog/"/>
-    <id>http://yoursite.com/2019/06/13/first_blog/</id>
-    <published>2019-06-13T08:49:06.757Z</published>
-    <updated>2019-06-13T09:35:36.282Z</updated>
-    
-    <content type="html"><![CDATA[<p>## </p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;## &lt;/p&gt;
-
-      
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>日语50音学习系列(二)</title>
-    <link href="http://yoursite.com/2019/04/25/japanese_02/"/>
-    <id>http://yoursite.com/2019/04/25/japanese_02/</id>
-    <published>2019-04-25T10:11:33.033Z</published>
-    <updated>2019-06-13T09:35:36.294Z</updated>
-    
-    <content type="html"><![CDATA[<p>导读：一直以来都想掌握日语的入门学习，对我来说，日语学习的门槛就是50音。而学习一门外语，我本身的理解是语言这样的东西重要的不是如何去驾驭它的语法结构，而是语言本身的发音和本地化的词汇积累，这些做好之后再将语言本身的语法嫁接上去，慢慢的，就自然而然的掌握这门语言了。</p><p><a href="https://helianthus-w.github.io/2019/04/25/japanese_01/" target="_blank" rel="noopener">日语50音学习系列(一)</a></p><blockquote><h4 id="清音行6"><a href="#清音行6" class="headerlink" title="清音行6"></a>清音行6</h4></blockquote><table><thead><tr><th></th><th align="center">あ段</th><th align="center">い段</th><th align="center">う段</th><th align="center">え段</th><th align="center">お段</th></tr></thead><tbody><tr><td>罗马音</td><td align="center">ha</td><td align="center">hi</td><td align="center">hu</td><td align="center">he</td><td align="center">ho</td></tr><tr><td>平假名</td><td align="center">は</td><td align="center">ひ</td><td align="center">ふ</td><td align="center">へ</td><td align="center">ほ</td></tr><tr><td>片假名</td><td align="center">ハ</td><td align="center">ヒ</td><td align="center">フ</td><td align="center">ヘ</td><td align="center">ホ</td></tr></tbody></table><blockquote><h4 id="清音行7"><a href="#清音行7" class="headerlink" title="清音行7"></a>清音行7</h4></blockquote><table><thead><tr><th></th><th align="center">あ段</th><th align="center">い段</th><th align="center">う段</th><th align="center">え段</th><th align="center">お段</th></tr></thead><tbody><tr><td>罗马音</td><td align="center">ma</td><td align="center">mi</td><td align="center">mu</td><td align="center">me</td><td align="center">mo</td></tr><tr><td>平假名</td><td align="center">ま</td><td align="center">み</td><td align="center">む</td><td align="center">め</td><td align="center">も</td></tr><tr><td>片假名</td><td align="center">マ</td><td align="center">ミ</td><td align="center">ム</td><td align="center">メ</td><td align="center">モ</td></tr></tbody></table><blockquote><h4 id="清音行8"><a href="#清音行8" class="headerlink" title="清音行8"></a>清音行8</h4></blockquote><table><thead><tr><th></th><th align="center">あ段</th><th align="center">い段</th><th align="center">う段</th><th align="center">え段</th><th align="center">お段</th></tr></thead><tbody><tr><td>罗马音</td><td align="center">ya</td><td align="center">i</td><td align="center">yu</td><td align="center">e</td><td align="center">yo</td></tr><tr><td>平假名</td><td align="center">や</td><td align="center">い</td><td align="center">ゆ</td><td align="center">え</td><td align="center">よ</td></tr><tr><td>片假名</td><td align="center">ヤ</td><td align="center">イ</td><td align="center">ユ</td><td align="center">エ</td><td align="center">ヨ</td></tr></tbody></table><blockquote><h4 id="清音行９"><a href="#清音行９" class="headerlink" title="清音行９"></a>清音行９</h4></blockquote><table><thead><tr><th></th><th align="center">あ段</th><th align="center">い段</th><th align="center">う段</th><th align="center">え段</th><th align="center">お段</th></tr></thead><tbody><tr><td>罗马音</td><td align="center">ra</td><td align="center">ri</td><td align="center">ru</td><td align="center">re</td><td align="center">ro</td></tr><tr><td>平假名</td><td align="center">ら</td><td align="center">り</td><td align="center">る</td><td align="center">れ</td><td align="center">ろ</td></tr><tr><td>片假名</td><td align="center">ラ</td><td align="center">リ</td><td align="center">ル</td><td align="center">レ</td><td align="center">ロ</td></tr></tbody></table><blockquote><h4 id="清音行10"><a href="#清音行10" class="headerlink" title="清音行10"></a>清音行10</h4></blockquote><table><thead><tr><th></th><th align="center">あ段</th><th align="center">い段</th><th align="center">う段</th><th align="center">え段</th><th align="center">お段</th></tr></thead><tbody><tr><td>罗马音</td><td align="center">wa</td><td align="center">i</td><td align="center">u</td><td align="center">e</td><td align="center">wo</td></tr><tr><td>平假名</td><td align="center">わ</td><td align="center">い</td><td align="center">う</td><td align="center">え</td><td align="center">を</td></tr><tr><td>片假名</td><td align="center">ワ</td><td align="center">イ</td><td align="center">ウ</td><td align="center">エ</td><td align="center">ヲ</td></tr></tbody></table>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;导读：一直以来都想掌握日语的入门学习，对我来说，日语学习的门槛就是50音。而学习一门外语，我本身的理解是语言这样的东西重要的不是如何去驾驭它的语法结构，而是语言本身的发音和本地化的词汇积累，这些做好之后再将语言本身的语法嫁接上去，慢慢的，就自然而然的掌握这门语言了。&lt;/p&gt;
-      
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>日语50音学习系列(一)</title>
-    <link href="http://yoursite.com/2019/04/25/japanese_01/"/>
-    <id>http://yoursite.com/2019/04/25/japanese_01/</id>
-    <published>2019-04-25T08:23:01.514Z</published>
-    <updated>2019-06-13T09:35:36.288Z</updated>
-    
-    <content type="html"><![CDATA[<p>导读：一直以来都想掌握日语的入门学习，对我来说，日语学习的门槛就是50音。而学习一门外语，我本身的理解是语言这样的东西重要的不是如何去驾驭它的语法结构，而是语言本身的发音和本地化的词汇积累，这些做好之后再将语言本身的语法嫁接上去，慢慢的，就自然而然的掌握这门语言了。</p><blockquote><h4 id="清音行1："><a href="#清音行1：" class="headerlink" title="清音行1："></a>清音行1：</h4></blockquote><table><thead><tr><th></th><th align="center">あ段</th><th align="center">い段</th><th align="center">う段</th><th align="center">え段</th><th align="center">お段</th></tr></thead><tbody><tr><td>罗马音</td><td align="center">a</td><td align="center">i</td><td align="center">u</td><td align="center">e</td><td align="center">o</td></tr><tr><td>平假名</td><td align="center">あ</td><td align="center">い</td><td align="center">う</td><td align="center">え</td><td align="center">お</td></tr><tr><td>片假名</td><td align="center">ア</td><td align="center">イ</td><td align="center">ウ</td><td align="center">エ</td><td align="center">オ</td></tr></tbody></table><blockquote><h4 id="清音行2："><a href="#清音行2：" class="headerlink" title="清音行2："></a>清音行2：</h4></blockquote><table><thead><tr><th></th><th align="center">あ段</th><th align="center">い段</th><th align="center">う段</th><th align="center">え段</th><th align="center">お段</th></tr></thead><tbody><tr><td>罗马音</td><td align="center">ka</td><td align="center">ki</td><td align="center">ku</td><td align="center">ke</td><td align="center">ko</td></tr><tr><td>平假名</td><td align="center">か</td><td align="center">き</td><td align="center">く</td><td align="center">け</td><td align="center">こ</td></tr><tr><td>片假名</td><td align="center">カ</td><td align="center">キ</td><td align="center">ク</td><td align="center">ケ</td><td align="center">コ</td></tr></tbody></table><blockquote><h4 id="清音行3"><a href="#清音行3" class="headerlink" title="清音行3"></a>清音行3</h4></blockquote><table><thead><tr><th></th><th align="center">あ段</th><th align="center">い段</th><th align="center">う段</th><th align="center">え段</th><th align="center">お段</th></tr></thead><tbody><tr><td>罗马音</td><td align="center">sa</td><td align="center">si</td><td align="center">su</td><td align="center">se</td><td align="center">so</td></tr><tr><td>平假名</td><td align="center">さ</td><td align="center">し</td><td align="center">す</td><td align="center">せ</td><td align="center">そ</td></tr><tr><td>片假名</td><td align="center">サ</td><td align="center">シ</td><td align="center">ス</td><td align="center">セ</td><td align="center">ソ</td></tr></tbody></table><blockquote><h4 id="清音行4"><a href="#清音行4" class="headerlink" title="清音行4"></a>清音行4</h4></blockquote><table><thead><tr><th></th><th align="center">あ段</th><th align="center">い段</th><th align="center">う段</th><th align="center">え段</th><th align="center">お段</th></tr></thead><tbody><tr><td>罗马音</td><td align="center">ta</td><td align="center">ti</td><td align="center">tu</td><td align="center">te</td><td align="center">to</td></tr><tr><td>平假名</td><td align="center">た</td><td align="center">ち</td><td align="center">つ</td><td align="center">て</td><td align="center">と</td></tr><tr><td>片假名</td><td align="center">タ</td><td align="center">チ</td><td align="center">ツ</td><td align="center">テ</td><td align="center">ト</td></tr></tbody></table><blockquote><h4 id="清音行5"><a href="#清音行5" class="headerlink" title="清音行5"></a>清音行5</h4></blockquote><table><thead><tr><th></th><th align="center">あ段</th><th align="center">い段</th><th align="center">う段</th><th align="center">え段</th><th align="center">お段</th></tr></thead><tbody><tr><td>罗马音</td><td align="center">na</td><td align="center">ni</td><td align="center">nu</td><td align="center">ne</td><td align="center">no</td></tr><tr><td>平假名</td><td align="center">な</td><td align="center">に</td><td align="center">ぬ</td><td align="center">ね</td><td align="center">の</td></tr><tr><td>片假名</td><td align="center">ナ</td><td align="center">ニ</td><td align="center">ヌ</td><td align="center">ネ</td><td align="center">ノ</td></tr></tbody></table>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;导读：一直以来都想掌握日语的入门学习，对我来说，日语学习的门槛就是50音。而学习一门外语，我本身的理解是语言这样的东西重要的不是如何去驾驭它的语法结构，而是语言本身的发音和本地化的词汇积累，这些做好之后再将语言本身的语法嫁接上去，慢慢的，就自然而然的掌握这门语言了。&lt;/p&gt;
-      
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>开始在GitHub上的写作之旅</title>
-    <link href="http://yoursite.com/2019/04/24/writing_on_github01/"/>
-    <id>http://yoursite.com/2019/04/24/writing_on_github01/</id>
-    <published>2019-04-24T07:16:08.618Z</published>
-    <updated>2019-06-13T09:35:36.358Z</updated>
-    
-    <content type="html"><![CDATA[<p>刚刚开始学习使用markdown来写博客，记录GFM的部分语法用法。<br>文内内容基本源自<a href="https://help.github.com/en/articles/basic-writing-and-formatting-syntax" target="_blank" rel="noopener">GFS基础语法</a>。<strong>GFS</strong> : GitHub使用了一种叫做GitHub Flavored Markdown的文本格式化语法，相比于常规的Markdown语法，它增加了一些独特的语法风格</p><h3 id="GFS基本的编写语法"><a href="#GFS基本的编写语法" class="headerlink" title="GFS基本的编写语法"></a>GFS基本的编写语法</h3><p>使用简单的语法在GitHub上来创作复风格的文章和代码</p><h5 id="一-标题"><a href="#一-标题" class="headerlink" title="(一)标题"></a>(一)标题</h5><pre><code>在文本前增加一个或者多个#(最多6个)即可创建一个标题，要添加#的数量取决于你的标题的尺寸</code></pre><h5 id="二-文本样式"><a href="#二-文本样式" class="headerlink" title="(二)文本样式"></a>(二)文本样式</h5><pre><code>Bold： 在文本前后增加**或者是__即可为文本加粗</code></pre><blockquote><p>  example: **this is a bold text**  -&gt;  <strong>this is a bold text</strong></p></blockquote><pre><code>Italic：在文本前后增加*或者是_即可使字体倾斜</code></pre><blockquote><p>example: *this is a italic text*  -&gt; <em>this is a italic text</em></p></blockquote><pre><code>Strikethrough：在文本前后增加~~即可为文本增加删除线</code></pre><blockquote><p>example: ~~this is a text with strikethrough~~  -&gt;  <del>this is a text with strikethrough</del></p></blockquote><pre><code>Bold and Italic：在文本前后\*\*\_即可使文本加粗并使其倾斜(即\*\*和\_组合使用)</code></pre><blockquote><p>example: **_this is a bold and italic text_**  -&gt;  <strong><em>this is a bold and italic text</em></strong></p></blockquote><h4 id="三-引用文本"><a href="#三-引用文本" class="headerlink" title="(三)引用文本"></a>(三)引用文本</h4><pre><code>在文本前增加&gt;即可创建引用文本</code></pre><blockquote><p>example: &gt; this is a quating text</p></blockquote><blockquote><p>this is a quating text</p></blockquote><h4 id="四-引用代码"><a href="#四-引用代码" class="headerlink" title="(四)引用代码"></a>(四)引用代码</h4><pre><code>在代码文本或者命令文本的前后增加一个`,被`包裹的文本不会被格式化</code></pre><blockquote><p>example: use `git status` to list all new or modified files that haven`t yet been commit;</p></blockquote><blockquote><p>use <code>git status</code> to list all new or modified files that haven`t yet been commit;</p></blockquote><pre><code>如果想要代码文本或者命令文本被格式化，只需要在文本块的上下行使用<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">&gt; example:  </span><br><span class="line">  </span><br><span class="line">```java</span><br><span class="line">    public class App &#123;</span><br><span class="line">        public static void main(String[] args) &#123;</span><br><span class="line">            System.out.println(&quot;hello world!&quot;);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure></code></pre><h4 id="五-链接"><a href="#五-链接" class="headerlink" title="(五)链接"></a>(五)链接</h4><pre><code>使用[]来包含链接文本，并且在其后面使用()来包含URL即可创建一个行内链接</code></pre><blockquote><p>example: [link text](link url)  -&gt;  <a href="https://helianthus-w.github.io" target="_blank" rel="noopener">Helianthus-W的空间</a></p></blockquote><h4 id="六-分段链接"><a href="#六-分段链接" class="headerlink" title="(六)分段链接"></a>(六)分段链接</h4><pre><code>Github允许在页面中直接链接到页面的模块部某块分段内容，鼠标悬停在该段内容上即可显示链接</code></pre><h4 id="七-相对链接"><a href="#七-相对链接" class="headerlink" title="(七)相对链接"></a>(七)相对链接</h4><pre><code>Github允许在页面中定义相对链接或者是图像路径来帮助读者浏览你的仓库中的其他文件</code></pre><h4 id="八-列表"><a href="#八-列表" class="headerlink" title="(八)列表"></a>(八)列表</h4><pre><code>在文本前面增加-或者是*即可创建一个无序的列表</code></pre><blockquote><p>example: </p></blockquote><blockquote><p>* first line<br>* second line<br>* third line</p></blockquote><blockquote></blockquote><ul><li><p>first line</p><blockquote></blockquote></li><li><p>second line</p><blockquote></blockquote></li><li><p>third line</p><p>  如果想要创建一个有序列表，在每一行前面增加一个数字即可</p></li></ul><blockquote><p>example: </p></blockquote><blockquote><p>\1. first line<br>\2. second line<br>\3. third line</p></blockquote><blockquote></blockquote><ol><li><p>first line </p><blockquote></blockquote></li><li><p>second line</p><blockquote></blockquote></li><li><p>third line</p><p> 如果想要创建一个嵌套列表，只需要在某个列表项的下方使用缩进来增加新的列表即可</p></li></ol><blockquote><p>example: </p></blockquote><blockquote></blockquote><ol><li>first line<ul><li>one</li><li>two</li><li>three<blockquote></blockquote></li></ul></li><li>second line <ol><li>one </li><li>two</li><li>three<blockquote></blockquote></li></ol></li><li>third line<ul><li>one</li></ul><ol><li>one</li><li>two</li></ol></li></ol><h4 id="九-任务列表"><a href="#九-任务列表" class="headerlink" title="(九)任务列表"></a>(九)任务列表</h4><pre><code>在文本前使用带有规整空格符的-和[ ] ，即&quot;- [] &quot;即可创建任务列表，如果要标记列表项为已完成，使用&quot; [x] &quot;即可</code></pre><blockquote><p>example: </p></blockquote><blockquote><p>- [x] first task<br>- [ ] second task<br>- [ ] third task</p></blockquote><blockquote><ul><li><input checked disabled type="checkbox"> first task</li><li><input disabled type="checkbox"> second task</li><li><input disabled type="checkbox"> third task</li></ul></blockquote><pre><code>如果文本是使用()开头的，则()需要使用\进行转义</code></pre><blockquote><p>example:<br>\- \[x\] \( this is a text with parentheses \)  -&gt;  - [x] ( this is a text with parentheses )</p></blockquote><h4 id="十-提醒-用户-团队"><a href="#十-提醒-用户-团队" class="headerlink" title="(十)提醒 用户/团队"></a>(十)提醒 用户/团队</h4><pre><code>在用户名或者是团队名前增加@即可向他们发送提醒。这将会触发一个通知并使得他们能够关注到这个会话。如果你修改了被提及人的评论，他们也会收到通知</code></pre><h4 id="十一-引用问题及推送请求"><a href="#十一-引用问题及推送请求" class="headerlink" title="(十一)引用问题及推送请求"></a>(十一)引用问题及推送请求</h4><pre><code>使用#即可在仓库中提出问题或者推送请求的建议列表，在#后继续键入问题或者推送请求的编号或者标题来选择要引用的列表项，使用enter键或者是tab键来补齐</code></pre><h4 id="十二-内容附件"><a href="#十二-内容附件" class="headerlink" title="(十二)内容附件"></a>(十二)内容附件</h4><pre><code>部分Github应用提供了用户在Github注册的域名中的链接信息，Github可以在一个问题或者是推送请求中引用这些应用提供的链接</code></pre><h4 id="十三-使用表情"><a href="#十三-使用表情" class="headerlink" title="(十三)使用表情"></a>(十三)使用表情</h4><pre><code>如果想要使用表情，只需:EMOJICODE:即可在文本中使用表情</code></pre><blockquote><p>example:  :smile:</p></blockquote><h4 id="十四-段落和换行"><a href="#十四-段落和换行" class="headerlink" title="(十四)段落和换行"></a>(十四)段落和换行</h4><pre><code>在文本行之间添加空行即可形成一个新的段落</code></pre><h4 id="十五-忽略markdown格式化"><a href="#十五-忽略markdown格式化" class="headerlink" title="(十五)忽略markdown格式化"></a>(十五)忽略markdown格式化</h4><pre><code>在markdown语法字符前使用\来通知GitHub来忽略markdown对文本的格式化</code></pre>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;刚刚开始学习使用markdown来写博客，记录GFM的部分语法用法。&lt;br&gt;文内内容基本源自&lt;a href=&quot;https://help.github.com/en/articles/basic-writing-and-formatting-syntax&quot; target=&quot;_
       
     
     </summary>
